@@ -1,0 +1,63 @@
+<div class="gmail" (scroll)="onPageScroll($event)">
+    <p-progressBar
+        *ngIf="loadingConfig.isLoadingData"
+        mode="indeterminate"
+        [style]="{ height: '3px' }"
+    ></p-progressBar>
+
+    <app-toolbar [config]="{labels}" (onFilter)="onFilter($event)"></app-toolbar>
+
+    <ng-container *ngIf="messages.length > 0">
+        <div class="list-view" (scroll)="onPageScroll($event)">
+            <div
+                *ngFor="let message of messages"
+                class="element-list--box"
+                (dblclick)="openMessage(message)"
+            >
+                <div class="element-list__part">
+                    <p-avatar
+                        shape="circle"
+                        size="large"
+                        [label]="systemService.setFirstLetterOfName(message.from)"
+                    ></p-avatar>
+
+                    <div class="message-info">
+                        <p class="element-list__title">{{ message.from }}</p>
+                        <p>{{ message.subject }}</p>
+                        <p-chip [label]="(message.createdAt | date) || ''"></p-chip>
+                    </div>
+                </div>
+
+                <div class="element-list__part">
+                    <p-multiSelect
+                        optionLabel="name"
+                        optionValue="id"
+                        [options]="labels"
+                        (ngModelChange)="updateOne($event, message)"
+                        [(ngModel)]="message.labelIds"
+                    ></p-multiSelect>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <p-progressBar
+        *ngIf="loadingConfig.isLoadingData && messages.length > 0"
+        mode="indeterminate"
+        [style]="{ height: '3px' }"
+    ></p-progressBar>
+</div>
+
+<p-sidebar
+    appendTo="body"
+    position="right"
+    styleClass="mail-sidebar"
+    [style]="{ width: 'fit-content' }"
+    [(visible)]="isOpenSidebar"
+>
+    <ng-container *ngIf="selectedMessage">
+        <div [innerHTML]="domSanitizer.bypassSecurityTrustHtml(selectedMessage?.textHtml)"></div>
+    </ng-container>
+</p-sidebar>
+
+<p-toast></p-toast>

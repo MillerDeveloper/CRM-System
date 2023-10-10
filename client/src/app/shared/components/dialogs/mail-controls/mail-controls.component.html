@@ -1,0 +1,25 @@
+<div class="p-modal">
+    <ng-container *ngIf="!stage.isSelectedService">
+        <div class="services">
+            <div
+                #googleAuthButton
+                id="googleAuthButton"
+                class="service-box"
+                (click)="selectService('google')"
+            >
+                <img src="/assets/images/integrations/gmail.webp" class="service-box--image" />
+
+                <div class="service-box__info">
+                    <h3 class="service-box--title">Gmail</h3>
+                    <p class="service-box--description">
+                        Gmail - это бесплатный веб-сервис электронной почты, который предоставляется
+                        компанией Google. Он был запущен в 2004 году и стал одним из самых
+                        популярных сервисов электронной почты в мире.
+                    </p>
+                </div>
+            </div>
+
+            <div id="googleButton"></div>
+        </div>
+    </ng-container>
+</div>

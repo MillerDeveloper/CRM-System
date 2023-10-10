@@ -1,0 +1,47 @@
+.table-column--icon {
+    margin-right: 10px;
+}
+
+.table {
+    width: 100%;
+}
+
+.table__body--element-text {
+    margin: 0;
+}
+
+:host ::ng-deep {
+    .p-datatable {
+        .p-paginator-bottom {
+            position: sticky;
+            bottom: -1px;
+        }
+
+        .row-index {
+            text-align: center;
+            margin: 0;
+            position: relative;
+            top: 16px;
+            font-size: 0.9rem;
+        }
+    }
+}
+
+.table-checkbox {
+    position: relative;
+    width: 42px;
+    max-width: 42px;
+}
+
+.is-duplicate {
+    display: block;
+    width: 100%;
+    text-align: center;
+
+    i {
+        position: absolute;
+        top: 10px;
+        left: 0;
+        right: 0;
+    }
+}

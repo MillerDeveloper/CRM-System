@@ -1,0 +1,117 @@
+<div class="task-controls">
+    <div class="p-modal">
+        <div class="task-controls__wrapper">
+            <form [formGroup]="taskForm">
+                <div class="p-field">
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-check-circle"></i>
+                        <input
+                            id="title"
+                            type="text"
+                            pInputText
+                            formControlName="title"
+                            [placeholder]="'tasks.enterTaskTitle' | translate"
+                        />
+                    </span>
+                </div>
+            </form>
+        </div>
+
+        <div class="p-modal-controls">
+            <div class="p-modal-controls__part">
+                <p-button
+                    styleClass="p-button-outlined"
+                    icon="pi pi-calendar"
+                    [label]="'tasks.' + selectedDate.value | translate"
+                    (click)="selectTaskDate.toggle($event)"
+                ></p-button>
+
+                <p-button
+                    styleClass="p-button-outlined"
+                    icon="pi pi-at"
+                    [label]="
+                        taskForm.value.responsibles.length === 1 &&
+                        taskForm.value.responsibles[0]._id === userService.currentUser._id
+                            ? ('tasks.assignedToYou' | translate)
+                            : ('tasks.assignedTo'
+                              | translate : { value: taskForm.value.responsibles.length })
+                    "
+                    (click)="selectResponsible.toggle($event)"
+                ></p-button>
+                <p-button
+                    styleClass="p-button-outlined"
+                    icon="pi pi-arrow-right-arrow-left"
+                    [disabled]="!!config.data?.isConnectedTasks"
+                    [label]="
+                        getCountConnectedElements() === 0
+                            ? ('tasks.connectRecord' | translate)
+                            : ('tasks.connectedRecords' | translate) +
+                              ': ' +
+                              getCountConnectedElements()
+                    "
+                    (click)="onConnectToTask()"
+                ></p-button>
+            </div>
+
+            <div class="p-modal-controls__part">
+                <p-splitButton
+                    icon="pi pi-check"
+                    appendTo="body"
+                    [disabled]="taskForm.invalid"
+                    [label]="'global.' + modalMode | translate"
+                    [model]="taskMenuModel"
+                    (onClick)="nextStep()"
+                ></p-splitButton>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-overlayPanel #selectTaskDate>
+    <ng-template pTemplate>
+        <ul *ngIf="!state.isPickCustomDate; else pickCustomDate" class="default-dates">
+            <li
+                *ngFor="let date of defaultDates"
+                class="default-dates__element"
+                (click)="selectDate($event, date)"
+            >
+                <div class="default-dates__element-info">
+                    <i [class]="date.icon"></i>
+                    <p class="default-dates__label">{{ 'tasks.' + date.value | translate }}</p>
+                </div>
+
+                <time *ngIf="date.endAt" class="default-dates__dateEnd">{{
+                    date.endAt | date
+                }}</time>
+            </li>
+        </ul>
+        <ng-template #pickCustomDate>
+            <p-calendar
+                [inline]="state.isPickCustomDate"
+                [showWeek]="true"
+                (onSelect)="selectDate($event, $event)"
+            ></p-calendar>
+        </ng-template>
+    </ng-template>
+</p-overlayPanel>
+
+<p-overlayPanel #selectResponsible>
+    <ng-template pTemplate>
+        <form [formGroup]="taskForm" class="select-responsibles">
+            <div class="p-field">
+                <app-users-multiselect
+                    [config]="{ selectedUsers: [currentUser._id], selectWithoutCurrent: false }"
+                    [formConfig]="{ form: taskForm, controlName: 'responsibles' }"
+                ></app-users-multiselect>
+            </div>
+        </form>
+
+        <div class="p-modal-controls p-modal-controls--right">
+            <p-button
+                icon="pi pi-arrow-right-arrow-left"
+                [label]="'global.appoint' | translate"
+                (onClick)="selectResponsible.toggle($event)"
+            ></p-button>
+        </div>
+    </ng-template>
+</p-overlayPanel>

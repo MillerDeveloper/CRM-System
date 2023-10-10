@@ -1,0 +1,186 @@
+<section class="chats">
+    <div
+        *ngIf="chats.length > 0 && !loadingConfig.isFirstLoad && !config.isConnectedChat"
+        class="chats__sidebar"
+    >
+        <div class="chats__part">
+            <div class="chats__header">
+                <p class="chats__wrapper--title paramount-text">
+                    {{ 'chat.title' | translate }}
+                </p>
+            </div>
+
+            <div class="chats__wrapper">
+                <div *ngFor="let chat of chats; let isLast = last" [ngSwitch]="chat.chatType">
+                    <div
+                        (click)="selectChat(chat)"
+                        [ngClass]="{ 'selected-chat': chat._id === this.selectedChat?._id }"
+                    >
+                        <div
+                            *ngSwitchCase="'single'"
+                            [ngSwitch]="chat.externalConfig?.service"
+                            class="chat-box"
+                        >
+                            <ng-container *ngSwitchCase="'telegram'">
+                                <div *ngIf="chat.createdBy as user" class="chat-box__part">
+                                    <p-avatar
+                                        icon="pi pi-user"
+                                        size="xlarge"
+                                        shape="circle"
+                                        [label]="
+                                            systemService.setFirstLetterOfName(user.name.first)
+                                        "
+                                    ></p-avatar>
+                                    <div class="chat-box__user-info">
+                                        <p class="chat-box--name paramount-text">
+                                            {{ user.name.first }}
+                                            <small>(@{{ user.name.username }})</small>
+                                        </p>
+                                        <div class="chat-box--service-box">
+                                            <p-chip
+                                                label="Telegram"
+                                                styleClass="chat-box--service"
+                                                [image]="'/assets/images/integrations/telegram.webp'"
+                                            ></p-chip>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngSwitchDefault>
+                                <div *ngIf="chat.chatWith[0].data as user" class="chat-box__part">
+                                    <p-avatar
+                                        icon="pi pi-user"
+                                        size="xlarge"
+                                        shape="circle"
+                                        [image]="user.avatar?.url"
+                                    ></p-avatar>
+                                    <div class="chat-box__user-info">
+                                        <p class="chat-box--name paramount-text">
+                                            {{ getChatLabel(chat) }}
+                                        </p>
+                                        <small
+                                            *ngIf="layoutService.isLarger('tablet', true)"
+                                            class="chat-box--user-email secondary-text"
+                                        >
+                                            {{ user.email }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <div class="chat-box__part">
+                                <!-- <button
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    icon="pi pi-ellipsis-v"
+                                    class="p-button-rounded p-button-text"
+                                ></button> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="chats__part create-chat">
+            <button
+                pButton
+                pRipple
+                type="button"
+                icon="pi pi-plus"
+                class="p-button-outlined create-chat--button"
+                (click)="onCreateChat()"
+            ></button>
+        </div>
+    </div>
+    <div *ngIf="chats.length > 0" class="opened-chat" [ngClass]="{ 'connected-chat': config.isConnectedChat }">
+        <div class="opened-chat__container">
+            <div class="opened-chat__wrapper" *ngIf="selectedChat; else noSelectedChat">
+                <div class="opened-chat__part messages">
+                    <div
+                        #messagesContainer
+                        *ngIf="messagesGroups.length > 0; else noOneMessage"
+                        class="messages__container"
+                        (scroll)="onMessagesScroll($event)"
+                    >
+                        <ng-container *ngFor="let group of messagesGroups; let isLast = last">
+                            <div class="messages__group">
+                                <div class="messages__group--header">
+                                    <p class="messages__group--header-date">
+                                        {{ group.period.identifier }}
+                                    </p>
+                                </div>
+
+                                <div class="messages__wrapper">
+                                    <ng-container *ngFor="let message of group.messages">
+                                        <app-message
+                                            *ngIf="!isLast || (isLast && onScrollToBottom())"
+                                            [config]="{ message }"
+                                        ></app-message>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <ng-template #noOneMessage>
+                        <div
+                            *ngIf="!config?.isConnectedChat"
+                            class="create-view center-block-position"
+                        >
+                            <h3 class="center-block--title">
+                                {{ 'chat.noOneMessageTitle' | translate }}
+                            </h3>
+                            <p class="center-block--description">
+                                {{ 'chat.noOneMessageDescription' | translate }}
+                            </p>
+                        </div>
+                    </ng-template>
+                </div>
+                <div class="opened-chat__part create-message">
+                    <form class="create-message__form" [formGroup]="messageForm">
+                        <textarea
+                            pInputTextarea
+                            formControlName="text"
+                            class="create-message--textarea"
+                            [placeholder]="'chat.enterTextMessage' | translate"
+                            [autoResize]="true"
+                        ></textarea>
+                        <button
+                            pButton
+                            pRipple
+                            type="submit"
+                            icon="pi pi-send"
+                            class="p-button-rounded p-button-outlined"
+                            [disabled]="messageForm.invalid"
+                            (click)="sendMessage()"
+                        ></button>
+                    </form>
+                </div>
+            </div>
+            <ng-template #noSelectedChat>
+                <div class="create-view center-block-position">
+                    <h3 class="center-block--title">{{ 'chat.selectChatTitle' | translate }}</h3>
+                    <p class="center-block--description">
+                        {{ 'chat.selectChatDescription' | translate }}
+                    </p>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+    <ng-container *ngIf="chats.length === 0">
+        <div class="create-view center-block-position">
+            <h3 class="center-block--title">
+                {{ 'chat.noOneChatTitle' | translate }}
+            </h3>
+            <p class="center-block--description">
+                {{ 'chat.noOneChatDescription' | translate }}
+            </p>
+            <button
+                pButton
+                class="p-button-outlined"
+                icon="pi pi-plus"
+                [label]="'global.create' | translate"
+                (click)="onCreateChat()"
+            ></button>
+        </div>
+    </ng-container>
+</section>

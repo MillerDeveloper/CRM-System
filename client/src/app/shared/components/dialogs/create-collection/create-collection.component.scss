@@ -1,0 +1,44 @@
+.selection-type__box {
+    max-width: 400px;
+}
+
+.setting-control {
+    width: fit-content;
+}
+
+
+:host ::ng-deep {
+    .setting-control {
+        width: fit-content;
+
+        .p-button {
+            padding: 0.1rem 0.1rem;
+            font-size: 2rem;
+        }
+    }
+}
+
+.templates__wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.template__box {
+    max-width: 500px;
+    border: 2px solid var(--surface-border);
+    border-radius: 4px;
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+    align-items: center;
+}
+
+.template__box--title {
+    font-size: 1.6rem;
+}
+
+.template__box--part {
+    min-width: 80px;
+}

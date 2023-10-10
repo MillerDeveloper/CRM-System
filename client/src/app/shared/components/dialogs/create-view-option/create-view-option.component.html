@@ -1,0 +1,56 @@
+<div class="p-modal">
+    <div *ngIf="!state.viewType" class="create-field">
+        <div class="selection-type">
+            <div class="selection-type__wrapper">
+                <div class="selection-type__box" (click)="state.viewType = 'table'">
+                    <i class="pi pi-plus selection-type--icon"> </i>
+
+                    <div class="selection-type--title">Table</div>
+
+                    <div class="selection-type--description">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    </div>
+                </div>
+
+                <div class="selection-type__box" (click)="state.viewType = 'kanban'">
+                    <i class="pi pi-minus selection-type--icon"> </i>
+
+                    <div class="selection-type--title">Kanban</div>
+
+                    <div class="selection-type--description">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form *ngIf="state.viewType" [formGroup]="viewForm">
+        <div class="p-field">
+            <span class="p-input-icon-left">
+                <i class="pi pi-at"></i>
+                <input
+                    id="label"
+                    type="text"
+                    placeholder="Field label"
+                    pInputText
+                    formControlName="label"
+                    autofocus
+                />
+            </span>
+        </div>
+    </form>
+
+    <div class="p-modal-controls p-modal-controls--right">
+        <div class="p-modal-controls__part"></div>
+
+        <div class="p-modal-controls__part">
+            <p-button
+                icon="pi pi-check"
+                label="Create"
+                styleClass="p-button-outline"
+                (click)="create()"
+            ></p-button>
+        </div>
+    </div>
+</div>

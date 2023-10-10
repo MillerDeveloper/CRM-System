@@ -1,0 +1,19 @@
+<div class="p-modal">
+    <form [formGroup]="chatForm">
+        <span class="p-field">
+            <app-users-multiselect
+                [config]="{ selectedUsers: [], selectWithoutCurrent: true }"
+                [formConfig]="{ form: chatForm, controlName: 'chatWith' }"
+            ></app-users-multiselect>
+        </span>
+    </form>
+
+    <div class="p-modal-controls p-modal-controls--right">
+        <p-button
+            icon="pi pi-check"
+            label="Create"
+            styleClass="p-button-outline"
+            (click)="close()"
+        ></p-button>
+    </div>
+</div>

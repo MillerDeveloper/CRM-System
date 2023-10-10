@@ -1,0 +1,28 @@
+.field-box {
+    margin: 5px 0;
+}
+
+:host ::ng-deep {
+    .connect {
+        .p-datatable {
+            .p-paginator-bottom {
+                bottom: -20px;
+            }
+        }
+    }
+}
+
+.connect {
+    .selection-type__wrapper {
+        align-items: stretch;
+    }
+
+    .selection-type__box {
+        width: 150px;
+    }
+}
+
+.p-modal-controls {
+    position: sticky;
+    bottom: -15px;
+}

@@ -1,0 +1,69 @@
+<div class="p-modal">
+    <div class="user-group">
+        <form *ngIf="!stage.isFilledFields" [formGroup]="userForm">
+            <div class="p-field">
+                <p-multiSelect
+                    appendTo="body"
+                    optionLabel="name"
+                    formControlName="departments"
+                    display="chip"
+                    placeholder="User department"
+                    [filter]="true"
+                    [options]="userDepartments"
+                >
+                </p-multiSelect>
+            </div>
+        </form>
+
+        <app-user-rights
+            *ngIf="stage.isFilledFields"
+            [config]="{
+                modalMode: stage.isFilledCollectionsRights ? 'systemRights' : 'collectionsRights',
+                rights: {
+                    system: user.rights.system,
+                    collections: user.rights.collections
+                }
+            }"
+            (rightsChanged)="rightsChanged($event)"
+        ></app-user-rights>
+
+        <div class="p-modal-controls p-modal-controls--right">
+            <div class="p-modal-controls__part">
+                <p-button
+                    icon="pi pi-arrow-right-arrow-left"
+                    [styleClass]="
+                        stage.isFilledCollectionsRights ? 'p-button-primary' : 'p-button-outlined'
+                    "
+                    [label]="stage.isFilledFields ? 'Next' : 'Set custom rights'"
+                    [disabled]="userForm.invalid"
+                    (click)="nextStep()"
+                ></p-button>
+
+                <ng-container
+                    *ngIf="userForm.value.departments.length > 0 && !stage.isFilledFields"
+                >
+                    <ng-container
+                        *ngIf="userForm.value.departments.length === 1; else manyDepartments"
+                    >
+                        <p-button
+                            icon="pi pi-arrow-right-arrow-left"
+                            label="Save with department rights"
+                            [disabled]="userForm.invalid"
+                            (onClick)="stage.saveWithDepartmentRights = true; nextStep()"
+                        ></p-button>
+                    </ng-container>
+                    <ng-template #manyDepartments>
+                        <p-button
+                            icon="pi pi-arrow-right-arrow-left"
+                            label="Save with department rights"
+                            [disabled]="userForm.invalid"
+                            (onClick)="setDepartmentsMenu(); departmentsMenu.toggle($event)"
+                        ></p-button>
+                    </ng-template>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-menu #departmentsMenu appendTo="body" [popup]="true" [model]="departmentsMenuModel"></p-menu>

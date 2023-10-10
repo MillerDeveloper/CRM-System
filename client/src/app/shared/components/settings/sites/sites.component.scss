@@ -1,0 +1,36 @@
+.sites__wrapper--header {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.site-box {
+    margin-top: 10px;
+}
+
+.site-box__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid var(--surface-border);
+    border-radius: 4px;
+    padding: 0 10px;
+}
+
+.site-box__part {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.site-box--name {
+    margin-bottom: 0;
+}
+
+.site-box--description {
+    margin-top: 0;
+}
+
+.add-site {
+    margin-top: 15px;
+}

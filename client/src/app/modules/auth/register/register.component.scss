@@ -1,0 +1,24 @@
+@import 'responsive.scss';
+
+.avatar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.avatar-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.avatar-controls__title {
+    margin: 5px 0 10px 0;
+}
+
+.auth-info {
+    @include lg-width {
+        display: none;
+    }
+}
+

@@ -1,0 +1,41 @@
+@import 'responsive.scss';
+
+
+.list-view__wrapper {
+    margin-top: 35px;
+}
+
+.list-view__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.list-view__header-part {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.list-view__period {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin: 0;
+    margin-right: 15px;
+
+    @include sm-width {
+        margin-right: 5px;
+    }
+}
+
+.list-view__date,
+.list-view__quantity {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 200;
+}
+
+.list-view__content {
+    margin-top: 15px;
+}

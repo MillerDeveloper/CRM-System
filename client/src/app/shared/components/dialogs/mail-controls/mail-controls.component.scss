@@ -1,0 +1,32 @@
+.services {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.service-box {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 300px;
+    padding: 0 10px;
+    border: 1px solid var(--surface-border);
+    border-radius: 4px;
+    transition: background 0.3s;
+    cursor: pointer;
+
+    &:hover {
+        background: var(--surface-section);
+    }
+}
+
+.service-box--image {
+    max-width: 60px;
+}
+
+// .service-box--title {
+// }
+
+// .service-box--description {
+// }

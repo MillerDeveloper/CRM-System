@@ -1,0 +1,43 @@
+<p-toast></p-toast>
+<p-toast position="bottom-right" key="callToast" (onClose)="onReject()" [baseZIndex]="5000">
+    <ng-template let-message pTemplate="message">
+        <div
+            class="toast__wrapper"
+            [ngClass]="{
+                'is-calling': callStage === 'calling',
+                'is-answered': callStage === 'answered',
+                'is-hungUp': callStage === 'hungUp'
+            }"
+        >
+            <div class="toast__content">
+                <span class="waves">
+                    <i class="pi pi-phone toast__content--icon" style="font-size: 3rem"></i>
+                </span>
+
+                <div class="toast__info">
+                    <h4>{{ message.summary }}</h4>
+                    <p>{{ message.detail }}</p>
+                </div>
+            </div>
+
+            <div class="toast__controls">
+                <button
+                    type="button"
+                    pButton
+                    icon="pi pi-user-plus"
+                    (click)="onConfirm()"
+                    [label]="element ? 'Open card' : 'Create card'"
+                ></button>
+                <button
+                    type="button"
+                    pButton
+                    icon="pi pi-thumbs-down"
+                    [disabled]="!generalCallID"
+                    (click)="hangUp()"
+                    label="Reject"
+                    class="p-button-outlined"
+                ></button>
+            </div>
+        </div>
+    </ng-template>
+</p-toast>

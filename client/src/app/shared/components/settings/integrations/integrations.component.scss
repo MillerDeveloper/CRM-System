@@ -1,0 +1,28 @@
+.integrations__wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 10px;
+}
+
+.integration-box {
+    flex: 1 1 30%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 10px;
+    border: 2px solid var(--surface-border);
+    border-radius: 4px;
+    transition: background 0.3s;
+    cursor: pointer;
+    min-width: 340px;
+
+    &:hover {
+        background: var(--surface-section);
+    }
+}
+
+.integration-box--image {
+    max-height: 80px;
+    border-radius: 50%;
+}

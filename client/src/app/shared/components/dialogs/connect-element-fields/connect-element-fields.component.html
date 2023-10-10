@@ -1,0 +1,33 @@
+<p-pickList
+    [source]="fields"
+    [target]="connectionFields"
+    sourceHeader="Available"
+    targetHeader="Selected"
+    [dragdrop]="true"
+    [responsive]="true"
+    [sourceStyle]="{ height: '30rem' }"
+    [targetStyle]="{ height: '30rem' }"
+    filterBy="label"
+    sourceFilterPlaceholder="Search by label"
+    targetFilterPlaceholder="Search by label"
+>
+    <ng-template let-field pTemplate="item">
+        <div class="field-box">
+            <i class="pi pi-tag"></i>
+            <h5 class="field-box--label">{{ field.label }}</h5>
+        </div>
+    </ng-template>
+</p-pickList>
+
+<div class="p-modal-controls p-modal-controls--right">
+    <div class="p-modal-controls__part"></div>
+
+    <div class="p-modal-controls__part">
+        <p-button
+            icon="pi pi-check"
+            [label]="'global.add' | translate"
+            styleClass="p-button-outline"
+            (click)="setFields()"
+        ></p-button>
+    </div>
+</div>

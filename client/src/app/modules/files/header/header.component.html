@@ -1,0 +1,40 @@
+<div class="files-header module-header">
+    <div class="module-header__wrapper">
+        <div class="module-header__part">
+            <button
+                *ngIf="config.currentPath !== ''"
+                pButton
+                pRipple
+                type="button"
+                class="p-button-outlined"
+                icon="pi pi-arrow-left"
+                (click)="closeFolder.emit()"
+            ></button>
+
+            <p class="module-header--title">
+                {{ 'files.title' | translate }}
+            </p>
+
+            <!-- <p-selectButton
+                *ngIf="!config.isConnectedFiles"
+                optionLabel="label"
+                optionValue="value"
+                [options]="viewOptions"
+                (onChange)="onViewOptionChanged($event)"
+                [(ngModel)]="selectedViewOption"
+            ></p-selectButton> -->
+        </div>
+        <div class="module-header__part">
+            <button
+                pButton
+                pRipple
+                type="button"
+                icon="pi pi-folder"
+                class="p-button-outlined"
+                [label]="'files.createFolder' | translate"
+                (click)="onCreateFolder.emit()"
+            ></button>
+            <app-upload-button (uploadFiles)="uploadFiles.emit($event)"></app-upload-button>
+        </div>
+    </div>
+</div>

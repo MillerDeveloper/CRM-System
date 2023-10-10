@@ -1,0 +1,18 @@
+<header class="deliveries-header module-header">
+    <div class="module-header__wrapper">
+        <div class="module-header__part">
+            <p class="module-header--title">Deliveries</p>
+        </div>
+        <div class="module-header__part">
+            <button
+                *ngIf="config?.element"
+                pButton
+                pRipple
+                type="button"
+                icon="pi pi-plus"
+                label="Create delivery"
+                (click)="onCreateDelivery.emit()"
+            ></button>
+        </div>
+    </div>
+</header>

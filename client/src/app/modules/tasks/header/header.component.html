@@ -1,0 +1,18 @@
+<header class="tasks-header module-header">
+    <div class="module-header__wrapper">
+        <div class="module-header__part">
+            <p class="module-header--title">{{ 'tasks.title' | translate }}</p>
+        </div>
+        <div class="module-header__part">
+            <p-selectButton [options]="viewOptionsIcons" optionLabel="icon" optionValue="viewType"
+                (onChange)="onChangeViewType($event)" [(ngModel)]="selectedView">
+                <ng-template let-item>
+                    <i [class]="item.icon"></i>
+                </ng-template>
+            </p-selectButton>
+
+            <button pButton pRipple type="button" icon="pi pi-plus" [label]="'tasks.create' | translate"
+                (click)="onCreateTask.emit()"></button>
+        </div>
+    </div>
+</header>

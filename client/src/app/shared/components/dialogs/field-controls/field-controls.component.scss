@@ -1,0 +1,53 @@
+.create-option {
+    padding: 5px 4px;
+    width: 50px;
+}
+
+.field-options {
+    margin-top: 10px;
+
+    .p-field-group {
+        margin-top: 5px;
+    }
+}
+
+::ng-deep {
+    .option-field {
+        width: 100%;
+
+        .p-colorpicker-overlay {
+            width: 20px;
+        }
+    }
+
+    .option-chip {
+        padding: 5px 1.75rem;
+    }
+
+    .field-options {
+        .p-fieldset {
+            padding: 5px;
+        }
+
+        .p-fieldset-legend {
+            padding: 5px 1.25rem;
+        }
+    }
+
+    .option__color-pickers--divider.p-divider-horizontal {
+        max-width: 5px;
+        top: 7px;
+        padding: 0 0.5rem;
+    }
+}
+
+.option__color-pickers {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 0 10px;
+}
+
+.option__color-pickers--title {
+    text-align: center;
+}

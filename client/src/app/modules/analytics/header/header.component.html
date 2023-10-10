@@ -1,0 +1,27 @@
+<header class="deliveries-header module-header">
+    <div class="module-header__wrapper">
+        <div class="module-header__part">
+            <p class="module-header--title">{{ 'analytics.title' | translate }}</p>
+        </div>
+        <div class="module-header__part">
+            <p-selectButton
+                optionLabel="label"
+                optionValue="value"
+                [options]="periods"
+                (onChange)="selectPeriod($event)"
+                [(ngModel)]="selectedPeriod"
+            ></p-selectButton>
+
+            <p-calendar
+                selectionMode="range"
+                inputId="range"
+                appendTo="body"
+                dateFormat="dd.mm.yy"
+                [placeholder]="'analytics.selectDateRange' | translate"
+                [readonlyInput]="true"
+                [(ngModel)]="rangeDates"
+                (ngModelChange)="onFilter()"
+            ></p-calendar>
+        </div>
+    </div>
+</header>

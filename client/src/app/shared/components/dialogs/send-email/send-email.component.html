@@ -1,0 +1,29 @@
+<div class="p-modal">
+    <form [formGroup]="emailForm">
+        <div class="p-field">
+            <p-chips separator="," placeholder="Send to..." formControlName="sendTo"></p-chips>
+        </div>
+        <div class="p-field">
+            <input
+                type="text"
+                pInputText
+                formControlName="subject"
+                [placeholder]="'Subject message' | translate"
+            />
+        </div>
+        <div class="p-field">
+            <textarea
+                pInputTextarea
+                formControlName="text"
+                [rows]="5"
+                [cols]="30"
+                [autoResize]="true"
+                [placeholder]="'Enter message text'"
+            ></textarea>
+        </div>
+    </form>
+
+    <div class="p-modal-controls p-modal-controls--right">
+        <p-button icon="pi pi-send" [label]="'global.send' | translate" (onClick)="close()"></p-button>
+    </div>
+</div>

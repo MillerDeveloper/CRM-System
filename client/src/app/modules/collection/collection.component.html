@@ -1,0 +1,168 @@
+<ng-container *ngIf="route.snapshot.paramMap.has('id'); else createCollection">
+    <ng-container *ngIf="!loadingConfig?.isFirstLoad; else loading">
+        <app-collection-header
+            [config]="{collection}"
+            (updateCollection)="updateCollection($event)"
+            (onDeleteCollection)="confirmDeletion('collection')"
+        ></app-collection-header>
+
+        <app-toolbar
+            *ngIf="!loadingConfig.isFirstLoad"
+            [config]="{
+                loadingConfig: loadingConfig,
+                collection: collection,
+                selection: selection
+            }"
+            (changeView)="changeView($event)"
+            (clearFilters)="clearFilters()"
+            (reloadData)="fetchElements()"
+            (updateCollection)="updateCollection($event)"
+            (onCreateElement)="onCreateElement()"
+            (onCreateViewOption)="onCreateViewOption()"
+            (onDeletion)="confirmDeletion('element')"
+            (onCreateField)="onCreateField()"
+            (addField)="addField($event)"
+            (duplicateElements)="duplicateElements()"
+            (search)="search($event)"
+            (onExport)="onExport($event)"
+            (onImport)="onImport()"
+            (applyFilters)="applyFilters($event)"
+            (migrateElements)="migrateElements()"
+        ></app-toolbar>
+
+        <ng-container
+            *ngIf="collectionConfig?.viewOption?.viewType"
+            [ngSwitch]="collectionConfig.viewOption?.viewType"
+        >
+            <app-table-view
+                *ngSwitchCase="'table'"
+                [config]="{
+                    elements: elements,
+                    loadingConfig: loadingConfig,
+                    fetchConfig: fetchConfig,
+                    collection: collection,
+                    selection: selection,
+                    isActiveControls: true
+                }"
+                (fetchData)="fetchElements($event)"
+                (onCreateField)="onCreateField()"
+                (addField)="addField($event)"
+                (updateElement)="updateElement($event)"
+                (onDeletion)="confirmDeletion('element')"
+            ></app-table-view>
+
+            <app-kanban-view
+                *ngSwitchCase="'kanban'"
+                [config]="{
+                    elements: elements,
+                    loadingConfig: loadingConfig,
+                    fetchConfig: fetchConfig,
+                    collection: collection,
+                    selection: selection,
+                    isActiveControls: true
+                }"
+                (fetchData)="fetchElements($event)"
+                (onCreateField)="onCreateField()"
+                (onCreateElement)="onCreateElement($event)"
+                (updateCollection)="updateCollection($event)"
+                (updateElement)="updateElement($event)"
+                (onDeletion)="confirmDeletion('element')"
+            ></app-kanban-view>
+
+            <ng-container *ngSwitchDefault>
+                <div class="create-view center-block-position">
+                    <h3 class="center-block--title">
+                        {{ 'collection.createViewOptionTitle' | translate }}
+                    </h3>
+                    <p class="center-block--description">
+                        {{ 'collection.createViewOptionDescription' | translate }}
+                    </p>
+                    <button
+                        pButton
+                        class="p-button-outlined create-view--button"
+                        icon="pi pi-plus"
+                        [label]="'global.create' | translate"
+                        (click)="onCreateViewOption()"
+                    ></button>
+                </div>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-template #loading>
+        <div class="center-block-position">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+    </ng-template>
+</ng-container>
+<ng-template #createCollection>
+    <div
+        *ngIf="!loadingConfig.isFirstLoad && !loadingConfig.isLoadingData"
+        class="create-view center-block-position"
+    >
+        <h3 class="center-block--title">
+            {{ 'collection.noCollectionFoundTitle' | translate }}
+        </h3>
+        <p class="center-block--description">
+            {{ 'collection.createViewOptionDescription' | translate }}
+        </p>
+        <button
+            pButton
+            class="p-button-outlined create-view--button"
+            icon="pi pi-plus"
+            [label]="'global.create' | translate"
+            (click)="onCreateCollection()"
+        ></button>
+    </div>
+</ng-template>
+
+<ng-container
+    *ngIf="
+        elements.length === 0 &&
+        !loadingConfig.isLoadingData &&
+        isFiltered() &&
+        route.snapshot.paramMap.has('id')
+    "
+>
+    <div class="create-view center-block-position">
+        <h3 class="center-block--title">
+            {{ 'collection.noMatchFilterTitle' | translate }}
+        </h3>
+        <p class="center-block--description">
+            {{ 'collection.noMatchFilterDescription' | translate }}
+        </p>
+        <button
+            pButton
+            class="p-button-outlined"
+            icon="pi pi-filter-slash"
+            [label]="'global.reset' | translate"
+            (click)="clearFilters()"
+        ></button>
+    </div>
+</ng-container>
+
+<ng-container
+    *ngIf="
+        elements.length === 0 &&
+        !isFiltered() &&
+        !loadingConfig.isLoadingData &&
+        route.snapshot.paramMap.has('id')
+    "
+>
+    <div class="create-view center-block-position">
+        <h3 class="center-block--title">
+            {{ 'collection.noElementFoundTitle' | translate }}
+        </h3>
+        <p class="center-block--description">
+            {{ 'collection.noElementFoundDescription' | translate }}
+        </p>
+        <button
+            pButton
+            class="p-button-outlined"
+            icon="pi pi-plus"
+            [label]="'global.create' | translate"
+            (click)="onCreateElement()"
+        ></button>
+    </div>
+</ng-container>
+
+<p-confirmDialog [baseZIndex]="10000" rejectButtonStyleClass="p-button-text"></p-confirmDialog>

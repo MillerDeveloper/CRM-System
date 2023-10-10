@@ -1,0 +1,31 @@
+.default-dates__element {
+    padding: 2px 15px;
+    transition: background 0.3s;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 34px;
+
+    &:hover {
+        background: var(--surface-section);
+    }
+}
+
+.default-dates__element-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.select-responsibles {
+    min-width: 250px;
+}

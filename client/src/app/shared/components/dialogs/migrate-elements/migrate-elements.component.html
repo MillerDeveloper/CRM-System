@@ -1,0 +1,21 @@
+<div class="p-modal">
+    <div class="p-field">
+        <p-dropdown
+            appendTo="body"
+            optionLabel="label.text"
+            [options]="collections"
+            [(ngModel)]="selectedCollection"
+        ></p-dropdown>
+    </div>
+
+    <div class="p-modal-controls">
+        <div class="p-modal-controls__part"></div>
+        <div class="p-modal-controls__part">
+            <p-button
+                icon="pi pi-send"
+                [label]="'global.send' | translate"
+                (onClick)="close()"
+            ></p-button>
+        </div>
+    </div>
+</div>

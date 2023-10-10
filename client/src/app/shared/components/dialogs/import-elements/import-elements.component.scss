@@ -1,0 +1,48 @@
+.select-field__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    background: var(--surface-section);
+    border-radius: 6px;
+}
+
+.select-field__part {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.select-fields__header {
+    text-align: center;
+}
+
+.select-fields__header--title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.select-fields__header--description {
+    color: var(--secondary-text-color);
+    font-weight: 200;
+    margin-bottom: 30px;
+    margin-top: 5px;
+}
+
+.select-field--icon {
+    color: green;
+    font-size: 1.8rem;
+}
+
+.compare-fields__box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.import-box {
+    min-height: 300px;
+}

@@ -1,0 +1,291 @@
+<div class="task-controls">
+    <div class="p-modal">
+        <div class="task-controls__wrapper">
+            <form [formGroup]="deliveryForm">
+                <div *ngIf="!stage.isFilledSenderFields" formGroupName="sender">
+                    <h5 class="stage--title paramount-text">
+                        {{ 'delivery.enterSenderFields' | translate }}
+                    </h5>
+                    <p class="stage--description secondary-text">
+                        {{ 'delivery.enterSenderFields' | translate }}
+                    </p>
+
+                    <span class="p-field">
+                        <p-dropdown
+                            optionLabel="Present"
+                            appendTo="body"
+                            formControlName="city"
+                            [options]="serviceData.cities"
+                            [placeholder]="'delivery.citySender' | translate"
+                            [filter]="true"
+                            (onFilter)="getCities($event)"
+                            (onChange)="getCounterparty('Sender')"
+                        ></p-dropdown>
+                    </span>
+
+                    <span class="p-field">
+                        <p-dropdown
+                            optionLabel="Description"
+                            appendTo="body"
+                            formControlName="data"
+                            [filter]="true"
+                            [options]="serviceData.senders"
+                            [placeholder]="'delivery.sender' | translate"
+                            (onFilter)="getCounterparty('Sender')"
+                            (onChange)="getContacts('Sender')"
+                        ></p-dropdown>
+                    </span>
+
+                    <span class="p-field">
+                        <p-dropdown
+                            optionLabel="Description"
+                            appendTo="body"
+                            formControlName="contact"
+                            [filter]="true"
+                            [options]="serviceData.contactsSender"
+                            [placeholder]="'delivery.contact' | translate"
+                            (onFilter)="getContacts('Sender')"
+                            (onChange)="getWarehouseTypes()"
+                        ></p-dropdown>
+                    </span>
+
+                    <span class="p-field">
+                        <p-dropdown
+                            optionLabel="Description"
+                            appendTo="body"
+                            formControlName="warehouseType"
+                            [options]="serviceData.warehouseTypes"
+                            [placeholder]="'delivery.warehouseTypes' | translate"
+                            (onShow)="getWarehouseTypes()"
+                        >
+                        </p-dropdown>
+                    </span>
+
+                    <span class="p-field">
+                        <p-dropdown
+                            optionLabel="Description"
+                            appendTo="body"
+                            formControlName="address"
+                            [options]="serviceData.warehouses"
+                            [placeholder]="'delivery.warehouse' | translate"
+                            [filter]="true"
+                            (onShow)="getWarehouses($event, 'Sender')"
+                            (onFilter)="getWarehouses($event, 'Sender')"
+                        ></p-dropdown>
+                    </span>
+                </div>
+
+                <div
+                    *ngIf="stage.isFilledSenderFields && !stage.isFilledRecipientFields"
+                    formGroupName="recipient"
+                >
+                    <h5 class="stage--title paramount-text">Enter recipient fields</h5>
+                    <p class="stage--description secondary-text">
+                        Enter recipient fields for novaposhta
+                    </p>
+
+                    <span class="p-field">
+                        <p-dropdown
+                            optionLabel="Present"
+                            appendTo="body"
+                            formControlName="city"
+                            [options]="serviceData.cities"
+                            [placeholder]="'delivery.city' | translate"
+                            [filter]="true"
+                            (onFilter)="getCities($event)"
+                            (onHide)="createCounterparty('Recipient')"
+                            (onChange)="getWarehouseTypes()"
+                        ></p-dropdown>
+                    </span>
+
+                    <span class="p-field">
+                        <p-dropdown
+                            optionLabel="Description"
+                            appendTo="body"
+                            formControlName="warehouseType"
+                            [options]="serviceData.warehouseTypes"
+                            [placeholder]="'delivery.warehouseType' | translate"
+                            (onShow)="getWarehouseTypes()"
+                        >
+                        </p-dropdown>
+                    </span>
+
+                    <span class="p-field">
+                        <p-dropdown
+                            optionLabel="Description"
+                            appendTo="body"
+                            formControlName="address"
+                            [options]="serviceData.warehouses"
+                            [placeholder]="'delivery.warehouse' | translate"
+                            [filter]="true"
+                            (onShow)="getWarehouses($event, 'Recipient')"
+                            (onFilter)="getWarehouses($event, 'Recipient')"
+                        ></p-dropdown>
+                    </span>
+
+                    <div class="p-field">
+                        <input
+                            type="text"
+                            pInputText
+                            [placeholder]="'global.name.first' | translate"
+                            formControlName="firstName"
+                        />
+                    </div>
+
+                    <div class="p-field">
+                        <input
+                            type="text"
+                            pInputText
+                            [placeholder]="'global.name.patronomic' | translate"
+                            formControlName="middleName"
+                        />
+                    </div>
+
+                    <div class="p-field">
+                        <input
+                            type="text"
+                            pInputText
+                            [placeholder]="'global.name.last' | translate"
+                            formControlName="lastName"
+                        />
+                    </div>
+                </div>
+
+                <div *ngIf="stage.isFilledSenderFields && stage.isFilledRecipientFields">
+                    <h5 class="stage--title paramount-text">
+                        {{ 'delivery.extraFieldsTitle' | translate }}
+                    </h5>
+                    <p class="stage--description secondary-text">
+                        {{ 'delivery.extraFieldsDescription' | translate }}
+                    </p>
+
+                    <div class="p-field">
+                        <textarea
+                            pInputTextarea
+                            formControlName="description"
+                            cols="10"
+                            rows="5"
+                            [placeholder]="'fields.description' | translate"
+                        ></textarea>
+                    </div>
+
+                    <div class="p-field">
+                        <input
+                            type="number"
+                            pInputText
+                            [placeholder]="'delivery.cost' | translate"
+                            formControlName="cost"
+                        />
+                    </div>
+
+                    <div class="p-field">
+                        <p-dropdown
+                            formControlName="cargoType"
+                            optionLabel="Description"
+                            optionValue="Ref"
+                            appendTo="body"
+                            [options]="serviceData.cargoTypes"
+                            [filter]="true"
+                            [placeholder]="'delivery.cargoType' | translate"
+                            (onShow)="getCargoTypes()"
+                        ></p-dropdown>
+                    </div>
+
+                    <div class="p-field">
+                        <p-dropdown
+                            formControlName="payerType"
+                            appendTo="body"
+                            optionLabel="controlName"
+                            optionValue="controlName"
+                            [placeholder]="'novaposhta.payerType' | translate"
+                            [options]="payerTypes"
+                        ></p-dropdown>
+                    </div>
+
+                    <div *ngIf="deliveryForm.value.payerType !== 'Recipient'" class="p-field">
+                        <p-dropdown
+                            formControlName="paymentMethod"
+                            optionLabel="controlName"
+                            optionValue="controlName"
+                            appendTo="body"
+                            [placeholder]="'delivery.paymentMethod' | translate"
+                            [options]="paymentMethods"
+                        ></p-dropdown>
+                    </div>
+
+                    <div class="p-field">
+                        <input
+                            type="number"
+                            pInputText
+                            [placeholder]="'delivery.volume' | translate"
+                            formControlName="volumeGeneral"
+                        />
+                    </div>
+
+                    <div class="p-field">
+                        <input
+                            type="number"
+                            pInputText
+                            [placeholder]="'delivery.weight' | translate"
+                            formControlName="weight"
+                            placeholder="Weight"
+                        />
+                    </div>
+
+                    <div class="p-field">
+                        <p-dropdown
+                            formControlName="serviceType"
+                            optionLabel="controlName"
+                            appendTo="body"
+                            optionValue="controlName"
+                            [placeholder]="'delivery.serviceType' | translate"
+                            [options]="serviceTypes"
+                        ></p-dropdown>
+                    </div>
+
+                    <div class="p-field">
+                        <input
+                            type="number"
+                            pInputText
+                            [placeholder]="'delivery.seatsAmount' | translate"
+                            formControlName="seatsAmount"
+                        />
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="p-modal-controls">
+            <div class="p-modal-controls__part">
+                <p-button
+                    styleClass="p-button-outlined"
+                    icon="pi pi-calendar"
+                    [label]="'delivery.deliveryDate' | translate"
+                    (click)="selectDeliveryDate.toggle($event)"
+                ></p-button>
+            </div>
+
+            <div class="p-modal-controls__part">
+                <p-button
+                    styleClass="p-button-outlined"
+                    icon="pi pi-arrow-right"
+                    [disabled]="deliveryForm.invalid"
+                    [label]="'global.next' | translate"
+                    (click)="nextStep()"
+                ></p-button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-overlayPanel #selectDeliveryDate>
+    <ng-template pTemplate>
+        <form [formGroup]="deliveryForm">
+            <p-calendar
+                [inline]="true"
+                [showWeek]="true"
+                formControlName="deliveryDate"
+            ></p-calendar>
+        </form>
+    </ng-template>
+</p-overlayPanel>

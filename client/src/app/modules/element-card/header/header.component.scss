@@ -1,0 +1,14 @@
+.card-header {
+    margin-top: 10px;
+}
+
+.card-header__wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header__part {
+    display: flex;
+    gap: 10px;
+}

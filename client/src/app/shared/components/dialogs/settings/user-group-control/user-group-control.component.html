@@ -1,0 +1,48 @@
+<div class="p-modal">
+    <div class="user-group">
+        <form *ngIf="!stage.isFilledFields" [formGroup]="userGroupForm">
+            <div class="p-field">
+                <span class="p-input-icon-left">
+                    <i class="pi pi-check-circle"></i>
+                    <input
+                        type="text"
+                        placeholder="Enter group name"
+                        pInputText
+                        formControlName="name"
+                    />
+                </span>
+            </div>
+
+            <div class="p-field">
+                <textarea
+                    pInputTextarea
+                    formControlName="description"
+                    [placeholder]="'global.enterDescription' | translate"
+                    [cols]="35"
+                    [rows]="2"
+                    [autoResize]="true"
+                ></textarea>
+            </div>
+        </form>
+
+        <app-user-rights
+            *ngIf="stage.isFilledFields"
+            [config]="{
+                modalMode: stage.isFilledCollectionsRights ? 'systemRights' : 'collectionsRights',
+                rights: rights
+            }"
+            (rightsChanged)="rightsChanged($event)"
+        ></app-user-rights>
+
+        <div class="p-modal-controls p-modal-controls--right">
+            <div class="p-modal-controls__part">
+                <p-button
+                    icon="pi pi-arrow-right-arrow-left"
+                    label="Next"
+                    [disabled]="userGroupForm.invalid"
+                    (click)="nextStep()"
+                ></p-button>
+            </div>
+        </div>
+    </div>
+</div>

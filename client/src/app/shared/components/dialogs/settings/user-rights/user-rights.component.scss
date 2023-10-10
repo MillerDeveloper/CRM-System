@@ -1,0 +1,49 @@
+.rights-container {
+    margin-top: 15px;
+}
+
+:host ::ng-deep {
+    .split-button {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+
+        .p-button {
+            padding: 4px 8px;
+        }
+    }
+}
+
+.rights-container {
+    .field-checkbox {
+        margin-top: 10px;
+    }
+}
+
+.modules-rights__box {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    gap: 20px;
+}
+
+.module-label {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+}
+
+.modules-rights__field {
+    min-width: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modules-rights__field-label {
+    width: 60px;
+}
+
+.modules-rights__field--label {
+    min-width: 55px;
+}

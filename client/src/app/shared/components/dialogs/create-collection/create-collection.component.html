@@ -1,0 +1,145 @@
+<div class="p-modal">
+    <div *ngIf="!state.createdType" class="create-collection">
+        <div class="selection-type">
+            <div class="selection-type__wrapper">
+                <div class="selection-type__box" (click)="state.createdType = 'template'">
+                    <i class="pi pi-plus selection-type--icon"> </i>
+
+                    <div class="selection-type--title">
+                        {{ 'collection.useTemplateTitle' | translate }}
+                    </div>
+
+                    <div class="selection-type--description">
+                        {{ 'collection.useTemplateDescription' | translate }}
+                    </div>
+                </div>
+
+                <div class="selection-type__box" (click)="state.createdType = 'manual'">
+                    <i class="pi pi-minus selection-type--icon"> </i>
+
+                    <div class="selection-type--title">
+                        {{ 'collection.createNowTitle' | translate }}
+                    </div>
+
+                    <div class="selection-type--description">
+                        {{ 'collection.createNowDescription' | translate }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-container *ngIf="!state.isSelectElementsTypes" [ngSwitch]="state.createdType">
+        <ng-container *ngSwitchCase="'template'">
+            <div class="templates__wrapper">
+                <div *ngFor="let template of templates" class="template__box">
+                    <div class="template__box--part">
+                        <p class="template__box--title">{{ template.label }}</p>
+                    </div>
+                    <div class="template__box--part">
+                        <p>{{ template.description }}</p>
+
+                        <button
+                            pButton
+                            [label]="'global.choose' | translate"
+                            (click)="selectTemplate(template.identifier)"
+                        ></button>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'manual'">
+            <form [formGroup]="collectionForm">
+                <ng-container formGroupName="label">
+                    <div class="p-field-group">
+                        <div class="p-field">
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-at"></i>
+                                <input
+                                    id="collectionName"
+                                    type="text"
+                                    pInputText
+                                    formControlName="text"
+                                    autofocus
+                                    [placeholder]="'collection.collectionName' | translate"
+                                />
+                            </span>
+                        </div>
+
+                        <div class="p-field setting-control">
+                            <p-button
+                                [label]="selectedEmoji"
+                                styleClass="p-button-text"
+                                (click)="isPickEmoji = true"
+                            ></p-button>
+                        </div>
+                    </div>
+
+                    <emoji-mart
+                        *ngIf="isPickEmoji"
+                        title="Pick your emoji…"
+                        emoji="point_up"
+                        [style]="{ position: 'absolute', top: '20px', left: '20px' }"
+                        (emojiSelect)="selectEmoji($event)"
+                    ></emoji-mart>
+                </ng-container>
+
+                <div class="p-field">
+                    <textarea
+                        pInputTextarea
+                        formControlName="description"
+                        [placeholder]="'global.enterDescription' | translate"
+                    ></textarea>
+                </div>
+            </form>
+        </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="state.isSelectElementsTypes">
+        <div class="selection-type">
+            <div class="selection-type__wrapper">
+                <div class="selection-type__box" (click)="selectElementsType('inanimate')">
+                    <i class="pi pi-plus selection-type--icon"> </i>
+
+                    <div class="selection-type--title">
+                        {{ 'collection.createInanimateTitle' | translate }}
+                    </div>
+
+                    <div class="selection-type--description">
+                        {{ 'collection.createInanimateDescription' | translate }}
+                    </div>
+                </div>
+
+                <div class="selection-type__box" (click)="selectElementsType('lively')">
+                    <i class="pi pi-minus selection-type--icon"> </i>
+
+                    <div class="selection-type--title">
+                        {{ 'collection.createLivelyTitle' | translate }}
+                    </div>
+
+                    <div class="selection-type--description">
+                        {{ 'collection.createLivelyDescription' | translate }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <div class="p-modal-controls p-modal-controls--right">
+        <div class="p-modal-controls__part"></div>
+
+        <div class="p-modal-controls__part">
+            <p-button
+                *ngIf="
+                    state.createdType &&
+                    !state.isSelectElementsTypes &&
+                    state.createdType !== 'template'
+                "
+                icon="pi pi-check"
+                [label]="'global.next' | translate"
+                styleClass="p-button-outline"
+                (click)="nextStep()"
+            ></p-button>
+        </div>
+    </div>
+</div>

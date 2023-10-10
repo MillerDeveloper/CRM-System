@@ -1,0 +1,94 @@
+// Small tablets and large smartphones (landscape view)
+$screen-xs-max: 360px;
+
+// Small tablets and large smartphones (landscape view)
+$screen-sm-max: 576px;
+
+// Small tablets (portrait view)
+$screen-md-max: 768px;
+
+// Tablets and small desktops
+$screen-lg-max: 992px;
+
+// Large tablets and desktops
+$screen-xl-max: 1200px;
+
+// Large tablets and desktops
+$screen-xxl-max: 1400px;
+
+// Handset: "(max-width: 599.98px) and (orientation: portrait), (max-width: 959.98px) and (orientation: landscape)"
+// HandsetLandscape: "(max-width: 959.98px) and (orientation: landscape)"
+// HandsetPortrait : "(max-width: 599.98px) and (orientation: portrait)"
+// Large: "(min-width: 1280px) and (max-width: 1919.98px)"
+// Medium: "(min-width: 960px) and (max-width: 1279.98px)"
+// Small: "(min-width: 600px) and (max-width: 959.98px)"
+// Tablet: "(min-width: 600px) and (max-width: 839.98px) and (orientation: portrait), (min-width: 960px) and (max-width: 1279.98px) and (orientation: landscape)"
+// TabletLandscape: "(min-width: 960px) and (max-width: 1279.98px) and (orientation: landscape)"
+// TabletPortrait: "(min-width: 600px) and (max-width: 839.98px) and (orientation: portrait)"
+// Web: "(min-width: 840px) and (orientation: portrait), (min-width: 1280px) and (orientation: landscape)"
+// WebLandscape: "(min-width: 1280px) and (orientation: landscape)"
+// WebPortrait: "(min-width: 840px) and (orientation: portrait)"
+// XLarge: "(min-width: 1920px)"
+// XSmall: "(max-width: 599.98px)"
+
+
+// Ultra Small devices
+@mixin xs-width {
+    @media (max-width: #{$screen-xs-max}) {
+        @content;
+    }
+}
+
+
+// Small devices
+@mixin sm-width {
+    @media (max-width: #{$screen-sm-max}) {
+        @content;
+    }
+}
+
+@mixin sm-height {
+    @media (max-height: #{$screen-sm-max}) {
+        @content;
+    }
+}
+
+// Medium devices
+@mixin md-width {
+    @media (max-width: #{$screen-md-max}) {
+        @content;
+    }
+}
+
+@mixin md-height {
+    @media (max-height: #{$screen-md-max}) {
+        @content;
+    }
+}
+
+
+// Large devices
+@mixin lg-width {
+    @media (max-width: #{$screen-lg-max}) {
+        @content;
+    }
+}
+
+// Extra large devices
+@mixin xl-width {
+    @media (max-width: #{$screen-xl-max}) {
+        @content;
+    }
+}
+
+@mixin xxl-width {
+    @media (max-width: #{$screen-xxl-max}) {
+        @content;
+    }
+}
+
+@mixin customWidth($screen) {
+    @media (max-width: ($screen + 'px')) {
+        @content;
+    }
+}

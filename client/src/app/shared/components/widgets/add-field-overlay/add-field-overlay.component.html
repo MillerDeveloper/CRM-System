@@ -1,0 +1,40 @@
+<div class="avaible-fields">
+    <h4 class="avaible-fields--title">{{ 'collection.addFields' | translate }}</h4>
+    <p-divider *ngIf="defaultFields.length !== 0"></p-divider>
+
+    <div class="avaible-fields__wrapper">
+        <div
+            *ngFor="let field of defaultFields"
+            class="avaible-fields__box"
+            (click)="addField.emit({field, mode: 'field'})"
+        >
+            <i [class]="field.icon + ' avaible-fields--icon'"></i>
+            <p class="avaible-fields--label">{{ field.label }}</p>
+        </div>
+
+        <ng-container *ngIf="collections.length > 0">
+            <p-divider>
+                <b>Connect From</b>
+            </p-divider>
+
+            <div
+                *ngFor="let collection of collections"
+                class="avaible-fields__box"
+                (click)="addField.emit({ field: collection, mode: 'collection' })"
+            >
+                <span class="avaible-fields--icon">{{ collection.label.icon }}</span>
+                <p class="avaible-fields--label">{{ collection.label.text }}</p>
+            </div>
+        </ng-container>
+    </div>
+
+    <div class="p-modal-controls p-modal-controls--right">
+        <button
+            pButton
+            class="p-button-outlined create-field"
+            icon="pi pi-plus"
+            [label]="'global.create' | translate"
+            (click)="onCreateField.emit()"
+        ></button>
+    </div>
+</div>

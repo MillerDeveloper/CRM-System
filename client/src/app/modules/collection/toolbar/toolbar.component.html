@@ -1,0 +1,280 @@
+<ng-container *ngIf="config.collection">
+    <div class="toolbar">
+        <div class="toolbar-part">
+            <p-splitButton icon="pi pi-plus" styleClass="p-button-outline" (onClick)="onCreateElement.emit()"
+                [model]="addButtonModel"></p-splitButton>
+
+            <button pButton class="p-button-outlined" icon="pi pi-refresh"
+                [loading]="config.loadingConfig.isLoadingData" (click)="reloadData.emit()"></button>
+
+            <button *ngIf="config.selection.length !== 0" pButton class="p-button-outlined"
+                icon="pi pi-arrow-right-arrow-left" (click)="migrateElements.emit()"></button>
+
+            <p-dropdown optionLabel="label" appendTo="body" [placeholder]="'collection.selectView' | translate"
+                [options]="viewOptions" [(ngModel)]="collectionConfig.viewOption"
+                (onChange)="onChangeView($event, 'viewOption')">
+                <ng-template pTemplate="selectedItem">
+                    <div>{{collectionConfig.viewOption.label}}</div>
+                </ng-template>
+                <ng-template let-viewOption pTemplate="item">
+                    <div class="select-viewoption--content">
+                        <div *ngIf="editableVOId !== viewOption._id; else editVOLabel">{{viewOption.label}}
+                        </div>
+                        <ng-template #editVOLabel>
+                            <input
+                            type="text"
+                            pAutoFocus
+                            pInputText [placeholder]="'fields.title' | translate"
+                            [(ngModel)]="viewOption.label"
+                            [autofocus]="true"
+                            (click)="$event.stopPropagation()"
+                        />
+                        </ng-template>
+
+                        <div>
+                            <button pButton pRipple type="button" [icon]="editableVOId ? 'pi pi-times' :'pi pi-pencil'"
+                                class="p-button-rounded p-button-text"
+                                (click)="editViewOptionLabel($event, viewOption);"></button>
+
+                            <button pButton pRipple type="button" icon="pi pi-trash"
+                                class="p-button-rounded p-button-danger p-button-text"
+                                [disabled]="viewOption._id === viewOptions[0]._id"
+                                (click)="$event.stopPropagation(); confirmViewoptionDeletion(viewOption)"></button>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+
+            <p-selectButton [options]="viewOptionsIcons" [ngModel]="collectionConfig.viewOption?.viewType"
+                optionLabel="icon" optionValue="viewType" (onChange)="changeViewType($event)">
+                <ng-template let-item>
+                    <i [class]="item.icon"></i>
+                </ng-template>
+            </p-selectButton>
+
+            <!-- <button
+            pButton
+            [label]="layoutService.isVisibleText('large', 'collection.addFilter' | translate)"
+            class="p-button-outlined"
+            icon="pi pi-filter"
+            (click)="opFilters.toggle($event)"
+        ></button> -->
+        </div>
+
+        <div class="toolbar-part">
+            <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input #search type="text" pInputText [placeholder]="'global.search' | translate"
+                    [ngModel]="config.search || viewOptionConfig?.searchText"
+                    (keyup.enter)="onSearch(search.value, true)" (ngModelChange)="onSearch($event)" />
+            </span>
+
+            <button *ngIf="fields.length > 0 && config.collection" pButton pRipple icon="pi pi-cog" type="button"
+                class="p-button-outlined" (click)="opSettings.toggle($event)"></button>
+
+            <button *ngIf="
+                hasCollectionRight({
+                    collectionId: config.collection._id,
+                    rights: userService.currentUser.rights.collections,
+                    right: 'export',
+                    mustEqualTo: true
+                }) ||
+                hasCollectionRight({
+                    collectionId: config.collection._id,
+                    rights: userService.currentUser.rights.collections,
+                    right: 'import',
+                    mustEqualTo: true
+                })
+            " pButton pRipple icon="pi pi-download" type="button"
+                [label]="layoutService.isVisibleText('large', 'collection.importExport' | translate)"
+                class="p-button-outlined" (click)="menuImportExport.toggle($event)"></button>
+
+            <button pButton class="p-button-outlined" icon="pi pi-filter-slash" [label]="'global.clear' | translate"
+                (click)="onClearFilters()"></button>
+        </div>
+    </div>
+
+    <div *ngIf="viewOptionConfig.showFilterLine" class="toolbar-part__filters">
+        <p-tabView [scrollable]="true" [activeIndex]="
+            isNumber(viewOptionConfig.currentStageIndex)
+                ? viewOptionConfig.currentStageIndex + 1
+                : null
+        " (onChange)="onFilter($event, 'stage')">
+            <p-tabPanel [header]="'global.all' | translate"></p-tabPanel>
+            <p-tabPanel *ngFor="let option of stages" [header]="option.label"></p-tabPanel>
+        </p-tabView>
+    </div>
+</ng-container>
+
+<p-overlayPanel #opFilters>
+    <ng-template pTemplate>
+        <div *ngIf="filterConfig.filters.length > 0" class="filters">
+            <div class="filters__wrapper">
+                <div *ngFor="let filter of filterConfig.filters; index as i" class="filters__container">
+                    <div class="filters__filter-box">
+                        <span *ngIf="i === 0; else selectMatchMode">
+                            <p-dropdown optionLabel="label" appendTo="body" [disabled]="true"
+                                [options]="[{ label: 'Where' }]" [ngModel]="'global.where' | translate"></p-dropdown>
+                        </span>
+                        <ng-template #selectMatchMode>
+                            <p-dropdown optionLabel="label" optionValue="value" appendTo="body" [options]="matchModes"
+                                [(ngModel)]="filter.matchMode"></p-dropdown>
+                        </ng-template>
+
+                        <p-dropdown #dropdownColumn optionLabel="label" optionValue="_id" appendTo="body"
+                            [options]="fields" [filter]="true" [(ngModel)]="filter.field"></p-dropdown>
+
+                        <input type="text" pInputText [placeholder]="'collection.enterSearchText' | translate"
+                            [(ngModel)]="filter.value" />
+                    </div>
+
+                    <i class="pi pi-cog filters__filter-box--controls"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="filters-controls" [ngClass]="{ colapsed: filterConfig.filters.length > 0 }">
+            <div class="filters-controls__part">
+                <button pButton pRipple type="button" icon="pi pi-plus" [label]="'collection.addFilter' | translate"
+                    [ngClass]="{
+                        'p-button-outlined': filterConfig.filters.length > 0,
+                        'p-button-text': filterConfig.filters.length === 0
+                    }" (click)="addFilter()"></button>
+            </div>
+
+            <div class="filters-controls__part" *ngIf="filterConfig.filters.length > 0">
+                <button pButton class="p-button-outlined" icon="pi pi-filter-slash" [style.marginLeft]="'10px'"
+                    (click)="onClearFilters()"></button>
+
+                <p-button icon="pi pi-check" [label]="'global.apply'" (onClick)="onApplyFilters()"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-overlayPanel>
+
+
+<p-overlayPanel #opSettings>
+    <ng-template pTemplate>
+        <div class="settings">
+            <div class="settings__wrapper">
+                <p-orderList *ngIf="fields.length > 0" filterBy="label"
+                    styleClass="no-controls settings__wrapper--fields-list"
+                    [filterPlaceholder]="'global.search' | translate" [header]="'settings.fields' | translate"
+                    [value]="fields" [dragdrop]="true">
+                    <ng-template let-field let-index="index" pTemplate="item">
+                        <div class="fields-box">
+                            <p class="fields-box--label">{{ getFieldLabel(field) }}</p>
+
+                            <div class="fields-box__controls">
+                                <button *ngIf="
+                                        hasSystemRight('collections.edit', {
+                                            mustEqualTo: 'allowed'
+                                        })
+                                    " pButton class="p-button-outlined" icon="pi pi-cog"
+                                    [disabled]="field.disabledSettings" (click)="onSettingField(index)"></button>
+                                <button *ngIf="
+                                        hasSystemRight('collections.edit', {
+                                            mustEqualTo: 'allowed'
+                                        })
+                                    " pButton class="p-button-outlined" icon="pi pi-times" [disabled]="
+                                        config.loadingConfig.isLoadingData ||
+                                        !field.settings?.canDelete
+                                    " (click)="removeField(index)"></button>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-orderList>
+
+                <div class="p-fluid p-field">
+                    <p-selectButton optionLabel="label" optionValue="value" appendTo="body"
+                        [options]="adittionalViewOptions" [ngModel]="viewOptionConfig?.styleOption"
+                        (onChange)="onChangeView($event, 'styleOption')">
+                        <ng-template let-item>
+                            <span class="p-button-label">{{ 'global.' + item.value | translate }}
+                            </span>
+                        </ng-template>
+                    </p-selectButton>
+                </div>
+
+                <div *ngIf="collectionConfig.viewOption?.viewType === 'table'" class="p-fluid p-field">
+                    <p-selectButton optionLabel="label" optionValue="value" appendTo="body"
+                        [options]="adittionalSizeOptions" [ngModel]="viewOptionConfig?.sizeOption"
+                        (onChange)="onChangeView($event, 'sizeOption')"></p-selectButton>
+                </div>
+
+                <div *ngIf="
+                        hasSystemRight('collections.edit', {
+                            mustEqualTo: 'allowed'
+                        })
+                    " class="switch-box">
+                    <p>{{ 'collection.collectionType' | translate }}</p>
+                    <p-dropdown appendTo="body" optionLabel="label" optionValue="identifier" [options]="collectionTypes"
+                        [(ngModel)]="config.collection.classification.collectionType">
+                        <ng-template pTemplate="selectedItem">
+                            <div>
+                                {{
+                                'collectionTypes.' +
+                                config.collection.classification?.collectionType | translate
+                                }}
+                            </div>
+                        </ng-template>
+                        <ng-template let-item pTemplate="item">
+                            {{ 'collectionTypes.' + item.identifier | translate }}
+                        </ng-template>
+                    </p-dropdown>
+                </div>
+
+                <span *ngIf="
+                        hasSystemRight('collections.edit', {
+                            mustEqualTo: 'allowed'
+                        })
+                    " class="switch-box">
+                    <p>{{ 'collection.showOnConnect' | translate }}</p>
+                    <p-inputSwitch [(ngModel)]="config.collection.settings.connection.isVisible"></p-inputSwitch>
+                </span>
+
+                <div class="switch-box">
+                    <p>{{ 'collection.showFilterLine' | translate }}</p>
+                    <p-inputSwitch [ngModel]="viewOptionConfig?.showFilterLine"
+                        (onChange)="onChangeView($event, 'showFilterLine')"></p-inputSwitch>
+                </div>
+
+                <div class="p-modal-controls">
+                    <div class="p-modal-controls__part">
+                        <p-button *ngIf="
+                                hasCollectionRight({
+                                    collectionId: config.collection._id,
+                                    rights: userService.currentUser.rights.collections,
+                                    right: 'edit',
+                                    mustEqualTo: 'allowed'
+                                })
+                            " styleClass="p-button-outlined" icon="pi pi-angle-left"
+                            (onClick)="onSettingInitialElementFields()"></p-button>
+
+                        <p-button *ngIf="
+                                hasCollectionRight({
+                                    collectionId: config.collection._id,
+                                    rights: userService.currentUser.rights.collections,
+                                    right: 'edit',
+                                    mustEqualTo: 'allowed'
+                                })
+                            " styleClass="p-button-outlined" icon="pi pi-plus"
+                            (onClick)="opAddField.toggle($event)"></p-button>
+                    </div>
+
+                    <p-button icon="pi pi-check" [label]="'global.save' | translate"
+                        (onClick)="onUpdateFields()"></p-button>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-overlayPanel>
+
+<p-overlayPanel appendTo="body" #opAddField>
+    <ng-template pTemplate>
+        <app-add-field-overlay [config]="{ collection: config.collection }" (addField)="addField.emit($event)"
+            (onCreateField)="onCreateField.emit($event)"></app-add-field-overlay>
+    </ng-template>
+</p-overlayPanel>
+
+<p-menu #menuImportExport appendTo="body" [popup]="true" [model]="menuImportExportModel"></p-menu>

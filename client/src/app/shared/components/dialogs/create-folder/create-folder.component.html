@@ -1,0 +1,28 @@
+<div class="p-modal">
+    <form *ngIf="!stage.isUploadFile" [formGroup]="folderForm">
+        <div class="p-field">
+            <input
+                type="text"
+                pInputText
+                formControlName="name"
+                [placeholder]="'Enter folder name'"
+            />
+        </div>
+    </form>
+
+    <div *ngIf="stage.isUploadFile" class="upload-box">
+        <h5 class="stage--title paramount-text">Upload first file to this folder</h5>
+        <app-upload-button></app-upload-button>
+    </div>
+
+    <div class="p-modal-controls p-modal-controls--right">
+        <app-upload-button
+            [config]="{
+                multiple: true,
+                setFormData: true,
+                disabled: folderForm.invalid
+            }"
+            (uploadFiles)="uploadFiles($event)"
+        ></app-upload-button>
+    </div>
+</div>

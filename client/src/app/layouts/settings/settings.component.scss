@@ -1,0 +1,46 @@
+@import 'responsive.scss';
+
+.settings {
+    display: flex;
+}
+
+.content {
+    background: var(--surface-ground);
+    flex: 1;
+    overflow-y: auto;
+    max-height: 100vh;
+    padding: 15px 0;
+}
+
+.sidebar {
+    width: 300px;
+
+    @include lg-width {
+        width: 200px;
+    }
+
+    @include md-width {
+        width: 50px;
+    }
+}
+
+::ng-deep {
+    .settings-header--title {
+        margin-bottom: 0;
+    }
+
+    .settings-header--description {
+        margin-top: 15px;
+    }
+
+    .content-container {
+        max-width: 760px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    .content-container--large {
+        max-width: 1170px;
+    }
+}

@@ -1,0 +1,163 @@
+<section class="kanban" id="kanban-view" [style.height]="viewHeight + 'px'">
+    <div *ngIf="!config.loadingConfig.isLoadingData; else loading" class="kanban__container">
+        <div class="kanban__wrapper">
+            <div class="kanban__stage">
+                <div class="stage__header">
+                    <div class="stage__info">
+                        <div class="stage__header--color" [style.backgroundColor]="'red'"></div>
+                        <p class="stage__header--label">{{ 'No Stage' }}</p>
+                    </div>
+                </div>
+
+                <p-divider></p-divider>
+
+                <div class="stage__body">
+                    <ng-container *ngFor="let element of config.elements; index as i">
+                        <div *ngIf="!isHasStage(element)" class="stage-card" pDraggable="dd"
+                            (onDragStart)="onDragStart(i)" (dblclick)="openCard(element)">
+                            <div class="stage-card__header">
+                                <div class="stage-card__header-info">
+                                    <i class="pi pi-eye stage-card__header--icon"></i>
+                                    <p class="stage-card__label">
+                                        <app-element-fields
+                                            [config]="{element, field: nameField, collection: config.collection, index: 0, disabled: !config.isActiveControls}"
+                                            (updateElement)="updateElement.emit($event)"></app-element-fields>
+                                    </p>
+                                </div>
+
+                                <p-checkbox name="groupname" [binary]="true"
+                                    (onChange)="toggleSelect(element)"></p-checkbox>
+                            </div>
+
+                            <p-divider></p-divider>
+
+                            <div class="stage-card__content">
+                                <ul class="stage-card__content-list">
+                                    <li *ngFor="let field of fields; index as index"
+                                        class="stage-card__content-element p-field">
+                                        <app-element-fields *ngIf="field._id !== 'stage' && field._id !== 'name'"
+                                            [config]="{element, field, collection: config.collection, index, disabled: !config.isActiveControls}"
+                                            (updateElement)="updateElement.emit($event)"></app-element-fields>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+
+            <div *ngFor="let stage of stages; let stageIndex = index; let last = last" class="kanban__stage"
+                pDroppable="dd" (onDrop)="onDrop($event, stage)">
+                <div class="stage__header">
+                    <div class="stage__info">
+                        <div class="stage__header--color" [style.backgroundColor]="stage.bgColor"></div>
+                        <p class="stage__header--label">{{ stage.label }}</p>
+                        <!-- <p-badge *ngIf="isRendered" severity="warning" [value]="stageCounter[stage._id]"></p-badge> -->
+                    </div>
+
+                    <div class="stage__controls">
+                        <button pButton pRipple type="button" icon="pi pi-plus" class="p-button-rounded p-button-text"
+                            (click)="onCreateBoardElement(stage)"></button>
+                        <button pButton pRipple type="button" icon="pi pi-ellipsis-v"
+                            class="p-button-rounded p-button-text"
+                            (click)="selectedStageIndex = stageIndex; stageMenuRef.toggle($event)"></button>
+                    </div>
+                </div>
+
+                <p-divider></p-divider>
+
+                <div class="stage__body">
+                    <ng-container *ngFor="let element of config.elements; index as i">
+                        <div *ngIf="isHasStage(element) && element.stage.value?.index === stage.index" pDraggable="dd"
+                            [attr.data-id]="element._id" class="stage-card" (onDrop)="onDrop($event, stage)"
+                            (onDragStart)="onDragStart(i)" (dblclick)="openCard(element)">
+                            <div class="stage-card__header">
+                                <div class="stage-card__header-info">
+                                    <i class="pi pi-eye stage-card__header--icon"></i>
+                                    <p class="stage-card__label">
+                                        <app-element-fields
+                                            [config]="{element, field: nameField, collection: config.collection, index: 0, disabled: !config.isActiveControls}"
+                                            (updateElement)="updateElement.emit($event)"></app-element-fields>
+                                    </p>
+                                </div>
+
+                                <p-checkbox name="groupname" [binary]="true"
+                                    (onChange)="toggleSelect(element)"></p-checkbox>
+                            </div>
+
+                            <p-divider></p-divider>
+
+                            <div class="stage-card__content">
+                                <ul class="stage-card__content-list">
+                                    <li *ngFor="let field of fields; index as index"
+                                        class="stage-card__content-element p-field">
+                                        <app-element-fields *ngIf="field._id !== 'stage' && field._id !== 'name'"
+                                            [config]="{element, field, collection: config.collection, index, disabled: !config.isActiveControls}"
+                                            (updateElement)="updateElement.emit($event)"></app-element-fields>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <button pButton pRipple type="button" icon="pi pi-plus" label="Add to collection"
+                        class="p-button-outlined stage__body--add" (click)="onCreateBoardElement(stage)"></button>
+                </div>
+            </div>
+
+            <div class="kanban__stage">
+                <div class="stage__header" [style.cursor]="'pointer'" (click)="opStage.toggle($event)">
+                    <div class="stage__info">
+                        <p class="stage__header--label">Add stage</p>
+                    </div>
+
+                    <div class="stage__controls">
+                        <button pButton pRipple type="button" icon="pi pi-plus"
+                            class="p-button-rounded p-button-text"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #loading>
+        <div class="center-block-position">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+    </ng-template>
+</section>
+
+<div class="board-paginator">
+    <p-paginator styleClass="board-paginator--element" dropdownAppendTo="body" [rows]="config.fetchConfig.rows || 0"
+        [first]="config.fetchConfig.skip || 0" [showCurrentPageReport]="true"
+        [totalRecords]="config.fetchConfig.totalCount" [rowsPerPageOptions]="[5, 10, 50, 100, 300, 500, 1000]"
+        (onPageChange)="onPaginatorChange($event)"></p-paginator>
+</div>
+
+
+<p-overlayPanel #opStage>
+    <ng-template pTemplate>
+        <div class="add-stage">
+            <form [formGroup]="stageForm">
+                <div class="p-field">
+                    <input #elementField class="field-inplace--field" pInputText formControlName="label"
+                        [placeholder]="'Stage label'" />
+                </div>
+
+                <div class="stage__info">
+                    <div class="stage__header--color">
+                        <p-colorPicker formControlName="bgColor"></p-colorPicker>
+                    </div>
+
+                    <small>Background color</small>
+                </div>
+            </form>
+        </div>
+
+        <div class="p-modal-controls p-modal-controls--right">
+            <button pButton icon="pi pi-plus" class="p-button-outlined" [label]="'global.create' | translate"
+                [disabled]="stageForm.invalid" (click)="addStage(); opStage.toggle($event)"></button>
+        </div>
+    </ng-template>
+</p-overlayPanel>
+
+<p-menu #stageMenuRef appendTo="body" [model]="stageMenu" [popup]="true"></p-menu>

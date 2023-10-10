@@ -1,0 +1,19 @@
+.call-box__audio {
+    max-height: 30px;
+}
+
+.calls__wrapper {
+    margin-top: 25px;
+}
+
+:host ::ng-deep {
+    .call-box__connected-to {
+        cursor: pointer;
+        padding: 0 1.75rem;
+        border: 2px solid var(--main-color);
+
+        .p-chip-icon {
+            margin-right: 0.8rem;
+        }
+    }
+}

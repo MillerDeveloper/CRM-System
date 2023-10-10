@@ -1,0 +1,46 @@
+<ng-container *ngIf="formConfig?.form" [formGroup]="formConfig.form">
+    <p-multiSelect
+        appendTo="body"
+        optionValue="_id"
+        filterPlaceHolder="Filter users"
+        filterBy="name.full,email"
+        ariaPlaceholder="Select users"
+        display="chip"
+        styleClass="users-multiselect"
+        [formControlName]="formConfig.controlName"
+        [displaySelectedLabel]="true"
+        [placeholder]="'Select users'"
+        [defaultLabel]="'Select users'"
+        [filter]="true"
+        [options]="users"
+        [selectionLimit]="50"
+        (onChange)="onSelectionChanged($event)"
+    >
+        <ng-template pTemplate="selectedItems">
+            <div *ngFor="let userId of config.selectedUsers" class="user-box">
+                <ng-container *ngIf="userService.getUserById(userId) as user">
+                    <p-avatar
+                        [label]="user.name?.first | getFirstLetter"
+                        size="large"
+                        shape="circle"
+                    ></p-avatar>
+
+                    <p>{{ user.name?.full }}</p>
+                </ng-container>
+            </div>
+
+            <div *ngIf="config.selectedUsers.length === 0" class="user-box">Select users</div>
+        </ng-template>
+        <ng-template let-user pTemplate="item">
+            <div class="user-box">
+                <p-avatar
+                    [label]="user.name?.first | getFirstLetter"
+                    size="large"
+                    shape="circle"
+                ></p-avatar>
+
+                <p>{{ user.name?.full }} ({{ user.email }})</p>
+            </div>
+        </ng-template>
+    </p-multiSelect>
+</ng-container>

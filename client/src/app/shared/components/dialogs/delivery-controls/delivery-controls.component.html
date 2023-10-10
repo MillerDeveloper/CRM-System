@@ -1,0 +1,7 @@
+<ng-container [ngSwitch]="serviceType">
+    <app-novaposhta
+        *ngSwitchCase="'novaposhta'"
+        [config]="config"
+        (createDelivery)="createDelivery($event)"
+    ></app-novaposhta>
+</ng-container>

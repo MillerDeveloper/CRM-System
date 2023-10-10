@@ -1,0 +1,10 @@
+<div
+    class="message"
+    *ngIf="config?.message"
+    [ngClass]="{ 'current-user-sent': isCurrentUserSent() }"
+>
+    <div class="message__box">
+        <p class="message__box--text">{{ config.message.text }}</p>
+        <time class="message__box--sentAt">{{ config.message.createdAt | date:'HH:mm' }}</time>
+    </div>
+</div>

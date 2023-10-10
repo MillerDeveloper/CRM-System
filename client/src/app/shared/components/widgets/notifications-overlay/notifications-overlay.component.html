@@ -1,0 +1,83 @@
+<section class="notifications">
+    <div class="notifications__container">
+        <h3 class="notifications--title">{{ 'notifications.title' | translate }}</h3>
+
+        <p-tabView>
+            <p-tabPanel [header]="'global.all' | translate">
+                <div
+                    *ngIf="config.notifications.length > 0; else noOneNotification"
+                    class="notifications__wrapper"
+                >
+                    <div
+                        *ngFor="let notification of config.notifications; index as i"
+                        class="element-box"
+                    >
+                        <div class="element-box__part">
+                            <i class="pi pi-bell"></i>
+                            <div (click)="openCard(notification)">
+                                <p class="element-box--label">
+                                    {{ notification.title }}
+                                </p>
+                                <time class="element-box--notifyAt">{{
+                                    notification.notifyAt | date
+                                }}</time>
+                            </div>
+                        </div>
+                        <div class="element-box__part element-box__controls">
+                            <button
+                                pButton
+                                class="p-button-outlined p-button-text"
+                                icon="pi pi-times"
+                                (click)="deleteNotification.emit(notification)"
+                            ></button>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #noOneNotification>
+                    <div class="no-elements">
+                        <div class="center-block-position">
+                            <h3 class="center-block--title">
+                                {{ 'notifications.noOneRequestTitle' | translate }}
+                            </h3>
+                            <p class="center-block--description">
+                                {{ 'notifications.noOneRequestDescription' | translate }}
+                            </p>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-tabPanel>
+            <p-tabPanel [header]="'global.requests' | translate">
+                <div class="notifications__wrapper">
+                    <div class="no-elements">
+                        <div class="center-block-position">
+                            <h3 class="center-block--title">
+                                {{ 'global.noOneRequestTitle' | translate }}
+                            </h3>
+                            <p class="center-block--description">
+                                {{ 'global.noOneRequestDescription' | translate }}
+                            </p>
+                        </div>
+                    </div>
+                    <!-- <div class="element-box">
+                        <div class="element-box__part">
+                            <i class="pi pi-bell"></i>
+                            <p class="element-box__label">Check out</p>
+                        </div>
+                        <div class="element-box__part element-box__controls">
+                            <button
+                                pButton
+                                class="p-button-outlined p-button-text"
+                                icon="pi pi-check"
+                            ></button>
+                            <button
+                                pButton
+                                class="p-button-outlined p-button-text"
+                                icon="pi pi-times"
+                            ></button>
+                        </div>
+                    </div> -->
+                </div>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+</section>

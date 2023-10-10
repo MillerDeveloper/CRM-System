@@ -1,0 +1,64 @@
+<section class="deliveries" [ngClass]="{ 'connected-deliveries': config?.isConnectedDeliveries }">
+    <ng-container *ngIf="deliveries.length > 0; else noOneDelivery">
+        <app-header
+            [config]="{ element: config?.element }"
+            (onCreateDelivery)="onCreateDelivery()"
+        ></app-header>
+
+        <div class="deliveries__wrapper">
+            <div *ngFor="let delivery of deliveries" class="delivery-box element-list--box">
+                <div class="delivery-box__part element-list__part">
+                    <p class="delivery-box--title">Novaposhta delivery</p>
+                    <ng-container
+                        *ngIf="
+                            collectionElementService.getConnectionLabel(
+                                delivery.connection.collectionRef,
+                                delivery.connection.to
+                            ) as label
+                        "
+                    >
+                        <p-chip
+                            styleClass="delivery-box__connected-to"
+                            icon="pi pi-arrow-right-arrow-left"
+                            [label]="label"
+                            (click)="collectionElementService.openCard(delivery)"
+                        ></p-chip>
+                    </ng-container>
+                </div>
+
+                <div class="delivery-box__part element-list__part">
+                    <p>{{ delivery.cost.amount }} {{ delivery.cost.currency }}</p>
+                    <p-chip [label]="(delivery.deliveryAt | date : 'dd.MM.yyyy') || ''"></p-chip>
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        icon="pi pi pi-ellipsis-v"
+                        class="p-button-rounded p-button-text"
+                        (click)="selectedDelivery = delivery; menu.toggle($event)"
+                    ></button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-template #noOneDelivery>
+        <div class="create-view center-block-position">
+            <h3 class="center-block--title">
+                {{ 'delivery.noOneDeliveryTitle' | translate }}
+            </h3>
+            <p class="center-block--description">
+                {{ 'delivery.noOneDeliveryDescription' | translate }}
+            </p>
+            <button
+                *ngIf="config?.element"
+                pButton
+                class="p-button-outlined"
+                icon="pi pi-plus"
+                [label]="'global.create' | translate"
+                (click)="onCreateDelivery()"
+            ></button>
+        </div>
+    </ng-template>
+</section>
+
+<p-menu #menu appendTo="body" [popup]="true" [model]="deliverySettingsMenu"></p-menu>

@@ -1,0 +1,70 @@
+.header__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 52px;
+}
+
+.header__container--name {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.header__container--icon {
+    cursor: pointer;
+    font-size: 1.6rem;
+}
+
+.collection-info {
+    display: flex;
+    align-items: center;
+}
+
+.collection-info--emoji {
+    font-size: 22px;
+    cursor: pointer;
+}
+
+:host ::ng-deep {
+    .collection-info--name {
+        .p-inplace-display {
+            font-size: 18px;
+            margin: 0;
+            font-weight: bold;
+        }
+    }
+
+    .collection-info--name-field {
+        font-size: 1.7rem;
+        font-weight: bold;
+        padding: 5px;
+    }
+
+    .collection-info--description-field {
+        max-width: 100%;
+        min-width: 400px;
+        min-height: 32px;
+    }
+
+    .header-divider {
+        margin: 0 0 1.25rem 0;
+    }
+}
+
+.crm-controls {
+    display: flex;
+    align-items: center;
+}
+
+.active-users {
+    margin-right: 10px;
+}
+
+.header__container--inplace-content {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    margin: 8px 0px 8px 10px;
+}

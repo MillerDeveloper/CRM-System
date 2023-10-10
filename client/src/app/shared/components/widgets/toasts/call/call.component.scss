@@ -1,0 +1,103 @@
+:host ::ng-deep {
+    .p-toast-message-call {
+        background: var(--surface-section);
+        border-left: 5px solid var(--main-color);
+        border-right: 2px solid var(--surface-border);
+        border-top: 2px solid var(--surface-border);
+        border-bottom: 2px solid var(--surface-border);
+    }
+}
+
+.toast__wrapper {
+    width: 100%;
+}
+
+.toast__content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.toast__controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.toast__wrapper.is-hungUp {
+    border-left-color: red;
+}
+
+.toast__wrapper.is-calling .toast__content--icon {
+    animation: callRing 1.5s infinite ease-in-out;
+}
+
+.toast__wrapper.is-calling .waves {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.toast__wrapper.is-calling .waves::before {
+    content: '';
+    position: absolute;
+    border: 1px solid var(--main-color);
+    width: calc(100% + 15px);
+    height: calc(100% + 15px);
+    border-radius: 50%;
+    animation: pulse 1s linear infinite;
+}
+
+.toast__wrapper.is-calling .waves::after {
+    content: '';
+    position: absolute;
+    border: 1px solid var(--main-color);
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+    border-radius: 50%;
+    animation: pulse 1s linear infinite;
+    animation-delay: 0.3s;
+}
+
+@keyframes callRing {
+    0% {
+        transform: rotate(0) scale(1) skew(1deg);
+    }
+    10% {
+        transform: rotate(-15deg) scale(1) skew(1deg);
+    }
+    20% {
+        transform: rotate(15deg) scale(1) skew(1deg);
+    }
+    30% {
+        transform: rotate(-15deg) scale(1) skew(1deg);
+    }
+    40% {
+        transform: rotate(15deg) scale(1) skew(1deg);
+    }
+    50% {
+        transform: rotate(0) scale(1) skew(1deg);
+    }
+    100% {
+        transform: rotate(0) scale(1) skew(1deg);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.3);
+        opacity: 0;
+    }
+}

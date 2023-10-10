@@ -1,0 +1,178 @@
+<section class="table" id="table-view">
+    <p-table
+        dataKey="_id"
+        [currentPageReportTemplate]="
+            ('global.showing' | translate) +
+            ' {first} ' +
+            ('global.to' | translate) +
+            ' {last} ' +
+            ('global.of' | translate) +
+            ' {totalRecords} ' +
+            ('global.entries' | translate)
+        "
+        columnResizeMode="expand"
+        stateStorage="local"
+        responsiveLayout="stack"
+        paginatorDropdownAppendTo="body"
+        [scrollHeight]="tableHeight + 'px'"
+        [virtualScroll]="false"
+        [virtualScrollItemSize]="100"
+        [stateKey]="tableConfigKey"
+        [columns]="fields"
+        [breakpoint]="'960px'"
+        [reorderableColumns]="config.isActiveControls"
+        [loading]="config.loadingConfig.isLoadingData"
+        [rowsPerPageOptions]="[5, 10, 25, 50, 100, 150, 300, 500]"
+        [styleClass]="
+            'table-view ' +
+            (viewOptionConfig.styleOption === 'striped'
+                ? 'p-datatable-striped'
+                : 'p-datatable-gridlines') +
+            ' ' +
+            viewOptionConfig.sizeOption
+        "
+        [value]="config.elements" [paginator]="true" [rows]="config.fetchConfig.rows || 0"
+        [first]="config.fetchConfig.skip || 0" [totalRecords]="config.fetchConfig.totalCount" [resizableColumns]="true"
+        [showCurrentPageReport]="true"
+        [lazy]="true"
+        [scrollable]="true"
+        (onLazyLoad)="onFetchData($event)"
+        (selectionChange)="onSelectionChange($event)" (onColResize)="onColResize($event)"
+        [(selection)]="config.selection">
+        <ng-template pTemplate="header" let-columns="columns">
+            <tr>
+                <th>
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <ng-container *ngFor="let field of fields" [ngSwitch]="field._id">
+                    <th pResizableColumn class="table-column" [pSortableColumn]="field._id">
+                        <ng-container *ngSwitchCase="'responsibles'">
+                            {{ getFieldLabel(field) }}
+
+                            <p-columnFilter *ngIf="
+                                    hasCollectionRight({
+                                        collectionId: config.collection._id,
+                                        rights: userService.currentUser.rights.collections,
+                                        right: 'view',
+                                        mustEqualTo: 'allowed'
+                                    })
+                                " matchMode="equals" display="menu" [showMatchModes]="false" [field]="field._id">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-multiSelect optionValue="_id" appendTo="body" [ngModel]="value"
+                                        [options]="userService.users" (onChange)="filter($event.value)"
+                                        [placeholder]="getFieldLabel(field)">
+                                        <ng-template let-value pTemplate="selectedItems">
+                                            <div *ngFor="
+                                                    let option of config.fetchConfig.filter[
+                                                        field._id
+                                                    ]
+                                                ">
+                                                <div *ngIf="userService.getUserById(option) as user">
+                                                    {{ user.name.full }}
+                                                </div>
+                                            </div>
+                                            <div *ngIf="
+                                                    !config.fetchConfig.filter[field._id] ??
+                                                    config.fetchConfig.filter[field._id]?.length ===
+                                                        0
+                                                " class="multiselect-placeholder">
+                                                Responsibles
+                                            </div>
+                                        </ng-template>
+                                        <ng-template let-option pTemplate="item">
+                                            {{ option.name.full }}
+                                        </ng-template>
+                                    </p-multiSelect>
+                                </ng-template>
+                            </p-columnFilter>
+
+                            <p-sortIcon [field]="getFieldLabel(field)"></p-sortIcon>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'stage'">
+                            {{ getFieldLabel(field) }}
+
+                            <p-columnFilter matchMode="equals" display="menu" [showMatchModes]="false"
+                                [showOperator]="false" [showAddButton]="false" [field]="field._id">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-multiSelect optionLabel="label" optionValue="index" appendTo="body"
+                                        [ngModel]="value" [options]="
+                                            findFieldOptions('stage', {
+                                                label: 'No stage',
+                                                index: null
+                                            })
+                                        " (onChange)="filter($event.value)" [placeholder]="getFieldLabel(field)">
+                                    </p-multiSelect>
+                                </ng-template>
+                            </p-columnFilter>
+
+                            <p-sortIcon [field]="getFieldLabel(field)"></p-sortIcon>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            {{ getFieldLabel(field) }}
+
+                            <p-columnFilter *ngIf="isDefaultFieldType(field.fieldType)"
+                                [type]="field.fieldType === 'datetime' ? 'date' : field.fieldType" [field]="field._id"
+                                [placeholder]="getFieldLabel(field)" display="menu"></p-columnFilter>
+
+                            <p-sortIcon [field]="getFieldLabel(field)"></p-sortIcon>
+                        </ng-container>
+                    </th>
+                </ng-container>
+                <th *ngIf="
+                        hasRight('collections.edit', {
+                            mustEqualTo: 'allowed'
+                        })
+                    " class="add-column" [style.width]="'20px !important'">
+                    <button pButton pRipple type="button" icon="pi pi-plus" class="p-button-rounded p-button-text"
+                        (click)="opAddField.toggle($event)"></button>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-element let-columns="columns" let-index="rowIndex">
+            <tr [pReorderableRow]="index" (dblclick)="openCard(element)">
+                <td class="table-checkbox">
+                    <p class="row-index">{{ index + 1 }}</p>
+                    <span *ngIf="element.duplicates?.length > 0" class="is-duplicate">
+                        <i class="pi pi-history"></i>
+                    </span>
+                    <p-tableCheckbox [value]="element"></p-tableCheckbox>
+                </td>
+                <ng-container *ngFor="let field of fields">
+                    <td>
+                        <app-element-fields
+                            [config]="{element, field, collection: config.collection, index, disabled: !config.isActiveControls}"
+                            (updateElement)="updateElement.emit($event)"></app-element-fields>
+                    </td>
+                </ng-container>
+                <td *ngIf="
+                        hasRight('collections.edit', {
+                            mustEqualTo: 'allowed'
+                        })
+                    " [style.width]="'20px !important'"></td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="loadingbody" let-columns="columns">
+            <tr style="height:46px">
+                <td *ngFor="let field of fields">
+                    <p-skeleton></p-skeleton>
+                </td>
+            </tr>
+        </ng-template>
+        <!-- <ng-template pTemplate="footer">
+            <tr>
+                <td colspan="2" class="text-right">Totals</td>
+                <td>{{ 'USD' }}</td>
+                <td>{{ 'USD' }}</td>
+            </tr>
+        </ng-template> -->
+    </p-table>
+</section>
+
+<!-- <p-contextMenu #contextTableMenu appendTo="body" [model]="contextTableMenuOptions"></p-contextMenu> -->
+
+<p-overlayPanel appendTo="body" #opAddField>
+    <ng-template pTemplate>
+        <app-add-field-overlay [config]="{ collection: config.collection }" (addField)="addField.emit($event)"
+            (onCreateField)="onCreateField.emit($event)"></app-add-field-overlay>
+    </ng-template>
+</p-overlayPanel>

@@ -1,0 +1,38 @@
+<div (click)="toggleOp($event)">
+    <div *ngIf="getStage() as stage; else noStage">
+        <div class="field-box" [ngStyle]="{ background: stage.bgColor }">
+            <p class="field-box--label" [ngStyle]="{ color: stage.textColor }">
+                {{ stage.label }}
+            </p>
+
+            <p-progressBar
+                styleClass="field-box--progress"
+                [value]="((stage.index + 1) / config.field.options?.length) * 100"
+                [showValue]="false"
+            ></p-progressBar>
+        </div>
+    </div>
+    <ng-template #noStage>
+        <div class="field-box" [ngStyle]="{ background: 'red' }">
+            <p class="field-box--label" [ngStyle]="{ color: 'white' }">No stage</p>
+        </div>
+    </ng-template>
+</div>
+
+<p-overlayPanel #opStates>
+    <ng-template pTemplate>
+        <div class="element-fields__container stages">
+            <div
+                *ngFor="let stage of config.field.options; index as i"
+                class="field-box"
+                [ngClass]="{ active: config.fieldForm.value.fieldValue?._id === stage._id }"
+                [ngStyle]="{ background: stage.bgColor }"
+                (click)="toggleOp($event); setStage(stage, i)"
+            >
+                <div class="field-box--label" [ngStyle]="{ color: stage.textColor }">
+                    {{ stage.label }}
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-overlayPanel>

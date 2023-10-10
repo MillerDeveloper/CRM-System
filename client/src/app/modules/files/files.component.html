@@ -1,0 +1,69 @@
+<section
+    *ngIf="files.length > 0 || folders.length > 0; else noOneFile"
+    class="files"
+    [ngClass]="{ 'connected-files': isConnectedFiles }"
+>
+    <app-header
+        [config]="{currentPath, isConnectedFiles: isConnectedFiles}"
+        (viewOptionChanged)="viewOptionChanged($event)"
+        (uploadFiles)="uploadFiles($event)"
+        (closeFolder)="closeFolder()"
+        (onCreateFolder)="onCreateFolder()"
+    ></app-header>
+    <p-progressBar
+        *ngIf="loadingConfig.isLoadingData"
+        mode="indeterminate"
+        [style]="{ height: '3px' }"
+    ></p-progressBar>
+
+    <div class="files__wrapper">
+        <div class="list-view">
+            <div *ngFor="let folder of folders" class="list-view__box" (click)="openFolder(folder)">
+                <div class="list-view__part">
+                    <ng-container>
+                        <i class="pi pi-folder list-view__box--icon"></i>
+                        <p class="list-view__box--title">{{ folder.label }}</p>
+                        <p class="list-view__box--quantity">({{ folder.quantityFiles }} {{ 'files.filesQuantity' | translate | lowercase }})</p>
+                    </ng-container>
+                </div>
+                <div class="list-view__part">
+                    <time class="list-view__box--created-at">{{ folder.uploadDate | date }}</time>
+                </div>
+            </div>
+        </div>
+
+        <p-divider *ngIf="folders.length > 0 && files.length > 0"></p-divider>
+
+        <div class="list-view">
+            <div *ngFor="let file of files" class="list-view__box">
+                <div class="list-view__part">
+                    <ng-container>
+                        <i class="pi pi-file list-view__box--icon"></i>
+                        <p class="list-view__box--title">{{ file.filename }}</p>
+                    </ng-container>
+                </div>
+                <div class="list-view__part">
+                    <time class="list-view__box--created-at">{{ file.uploadDate | date }}</time>
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        icon="pi pi-ellipsis-v"
+                        class="p-button-rounded p-button-text"
+                        (click)="fileMenu.toggle($event); selectedFile = file"
+                    ></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<ng-template #noOneFile>
+    <div class="create-view center-block-position">
+        <h3 class="center-block--title">{{ 'files.noOneFileTitle' | translate }}</h3>
+        <p class="center-block--description">{{ 'files.noOneFileDescription' | translate }}</p>
+        <app-upload-button (uploadFiles)="uploadFiles($event)"></app-upload-button>
+    </div>
+</ng-template>
+
+<p-menu #fileMenu appendTo="body" [popup]="true" [model]="fileMenuModel"></p-menu>
+<p-contextMenu #filesContextMenu appendTo="body" [model]="filesContextMenuModel"></p-contextMenu>

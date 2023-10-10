@@ -1,0 +1,367 @@
+<section *ngIf="currentUser" class="sidebar" [ngClass]="{ 'sidebar-closed': config.isClosedSidebar }">
+    <div class="sidebar-part">
+        <div class="sidebar__company-info">
+            <div
+                class="sidebar__company-info--wrapper sidebar-container"
+                (click)="menuOverlay.toggle($event)"
+                (dblclick)="onToggleSidebar($event)"
+            >
+                <div class="sidebar__company-info--avatar">
+                    <p-avatar
+                        *ngIf="utilService.isUrl(currentUser.avatar?.url); else noUserAvatar"
+                        size="xlarge"
+                        shape="circle"
+                        [image]="currentUser.avatar.url || ''"
+                        [style]="{ 'background-color': '#9c27b0', color: '#ffffff' }"
+                    ></p-avatar>
+                    <ng-template #noUserAvatar>
+                        <p-avatar
+                            size="xlarge"
+                            shape="circle"
+                            [label]="systemService.setFirstLetterOfName(currentCompany.name)"
+                            [style]="{ 'background-color': '#9c27b0', color: '#ffffff' }"
+                        ></p-avatar>
+                    </ng-template>
+
+                    <p class="sidebar__company-info--title">{{ currentCompany.name }}</p>
+                    <i class="pi pi-chevron-down sidebar__company-info--settings"></i>
+                </div>
+
+                <i
+                    class="pi pi-step-backward-alt toggle-sidebar"
+                    (click)="onToggleSidebar($event)"
+                ></i>
+            </div>
+        </div>
+
+        <p-divider styleClass="no-margin"></p-divider>
+
+        <div class="sidebar-container search-box">
+            <div class="p-field no-margin">
+                <span class="p-input-icon-left search-field">
+                    <i class="pi pi-search"></i>
+                    <input
+                        #search
+                        type="text"
+                        pInputText
+                        [placeholder]="'global.search' | translate"
+                        (keydown)="onSearch($event, search.value)"
+                    />
+                </span>
+            </div>
+
+            <span
+                class="notifications-button__wrapper"
+                pBadge
+                severity="danger"
+                [value]="notifications.length + ''"
+            >
+                <button
+                    pButton
+                    icon="pi pi-bell"
+                    class="p-button-outlined notifications-button"
+                    (click)="notificationsOverlay.toggle($event)"
+                ></button>
+            </span>
+        </div>
+
+        <nav class="sidebar-menu">
+            <ul class="sidebar-menu--list">
+                <li
+                    *ngIf="hasRight('analytics.view', { mustEqualTo: 'allowed' })"
+                    [routerLink]="['analytics']"
+                    class="sidebar-menu--element"
+                >
+                    <i class="pi pi-chart-bar sidebar-menu--icon"></i>
+                    <span class="sidebar-menu--element-text">{{
+                        'analytics.title' | translate
+                    }}</span>
+                </li>
+                <li
+                    *ngIf="hasRight('tasks.view', { mustNotEqualTo: 'forbidden' })"
+                    [routerLink]="['tasks']"
+                    class="sidebar-menu--element"
+                >
+                    <i class="pi pi-calendar-plus sidebar-menu--icon"></i>
+                    <span class="sidebar-menu--element-text">{{ 'tasks.title' | translate }}</span>
+                </li>
+                <li
+                    *ngIf="hasRight('mail.view', { mustNotEqualTo: 'forbidden' })"
+                    [routerLink]="['mail']"
+                    class="sidebar-menu--element"
+                >
+                    <i class="pi pi-at p-text-secondary sidebar-menu--icon"></i>
+                    <span class="sidebar-menu--element-text">Email</span>
+                </li>
+                <li
+                    *ngIf="hasRight('files.view', { mustNotEqualTo: 'forbidden' })"
+                    [routerLink]="['files']"
+                    class="sidebar-menu--element"
+                >
+                    <i class="pi pi-folder-open sidebar-menu--icon"></i>
+                    <span class="sidebar-menu--element-text">{{ 'files.title' | translate }}</span>
+                </li>
+                <li [routerLink]="['chats']" class="sidebar-menu--element">
+                    <i class="pi pi-comments sidebar-menu--icon"></i>
+                    <span class="sidebar-menu--element-text">{{ 'chat.title' | translate }}</span>
+                </li>
+                <li
+                    *ngIf="hasRight('deliveries.view', { mustNotEqualTo: 'forbidden' })"
+                    [routerLink]="['deliveries']"
+                    class="sidebar-menu--element"
+                >
+                    <i class="pi pi-send p-text-secondary sidebar-menu--icon"></i>
+                    <span class="sidebar-menu--element-text">{{
+                        'delivery.title' | translate
+                    }}</span>
+                </li>
+                <li
+                    *ngIf="hasRight('calls.view', { mustNotEqualTo: 'forbidden' })"
+                    [routerLink]="['calls']"
+                    class="sidebar-menu--element"
+                >
+                    <i class="pi pi-phone p-text-secondary sidebar-menu--icon"></i>
+                    <span class="sidebar-menu--element-text">{{ 'calls.title' | translate }}</span>
+                </li>
+            </ul>
+
+            <p-fieldset
+                [legend]="'collection.title' | translate"
+                styleClass="slim-fieldset"
+                [toggleable]="true"
+            >
+                <ul *ngIf="!loadingConfig.isLoadingData" class="sidebar-menu--list">
+                    <li
+                        *ngFor="let collection of collections"
+                        routerLinkActive="active"
+                        class="sidebar-menu--element"
+                        [routerLink]="'/collection/' + collection._id"
+                    >
+                        <span class="sidebar-menu--icon sidebar-menu--emoji">{{
+                            collection.label.icon
+                        }}</span>
+                        <span class="sidebar-menu--element-text">{{ collection.label.text }}</span>
+                    </li>
+                    <li
+                        *ngIf="hasRight('collections.create', { mustEqualTo: true })"
+                        class="sidebar-menu--element"
+                        (click)="onCreateCollection()"
+                    >
+                        <i class="pi pi-plus sidebar-menu--icon"></i>
+                        <span class="sidebar-menu--element-text">{{
+                            'collection.create' | translate
+                        }}</span>
+                    </li>
+                </ul>
+            </p-fieldset>
+        </nav>
+    </div>
+
+    <div class="sidebar-part">
+        <ul class="sidebar-menu--list">
+            <li
+                *ngIf="hasRight('settings.settingCompany', { mustEqualTo: true })"
+                [routerLink]="['activity']"
+                class="sidebar-menu--element"
+            >
+                <i class="pi pi-money-bill p-text-secondary sidebar-menu--icon"></i>
+                <span class="sidebar-menu--element-text">{{
+                    'tariffPlans.title' | translate
+                }}</span>
+            </li>
+            <li
+                *ngIf="hasRight('settings.users.invite', { mustNotEqualTo: 'forbidden' })"
+                class="sidebar-menu--element"
+                (click)="onInviteUsers()"
+            >
+                <i class="pi pi-verified p-text-secondary sidebar-menu--icon"></i>
+                <span class="sidebar-menu--element-text">{{
+                    'global.inviteMembers' | translate
+                }}</span>
+            </li>
+            <li [routerLink]="['activity']" class="sidebar-menu--element">
+                <i class="pi pi-question-circle p-text-secondary sidebar-menu--icon"></i>
+                <span class="sidebar-menu--element-text">{{ 'global.support' | translate }}</span>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<p-overlayPanel #notificationsOverlay [showCloseIcon]="true">
+    <ng-template pTemplate>
+        <app-notifications-overlay
+            [config]="{notifications}"
+            (deleteNotification)="deleteNotification($event)"
+        ></app-notifications-overlay>
+    </ng-template>
+</p-overlayPanel>
+
+<p-overlayPanel #menuOverlay styleClass="sidebar-settings-overlay" [showCloseIcon]="true">
+    <ng-template pTemplate>
+        <div class="sidebar-settings-menu">
+            <div class="element-settings-menu">
+                <div class="element-settings-menu__part">
+                    <p-avatar
+                        [label]="systemService.setFirstLetterOfName(currentCompany.name)"
+                        size="large"
+                        shape="circle"
+                        [style]="{ 'background-color': '#9c27b0', color: '#ffffff' }"
+                    ></p-avatar>
+
+                    <p class="element-settings-menu--title">{{ currentCompany.name }}</p>
+                </div>
+                <div class="element-settings-menu__part">
+                    <i class="pi pi-verified element-settings-menu--icon icon-check"></i>
+                </div>
+            </div>
+            <div
+                *ngIf="hasRight('settings.createCompany', { mustEqualTo: true })"
+                class="element-settings-menu"
+            >
+                <div class="element-settings-menu__part">
+                    <p-avatar
+                        icon="pi pi-plus-circle"
+                        size="large"
+                        shape="circle"
+                        [style]="{ 'background-color': '#75777c3d', color: '#ffffff' }"
+                    ></p-avatar>
+
+                    <p class="element-settings-menu--title">
+                        {{ 'global.createNewCompany' | translate }}
+                    </p>
+                </div>
+                <div class="element-settings-menu__part"></div>
+            </div>
+
+            <p-divider></p-divider>
+
+            <div class="element-settings-menu" [routerLink]="['settings', 'profile']">
+                <div class="element-settings-menu__part">
+                    <p-avatar
+                        icon="pi pi-user"
+                        size="large"
+                        shape="circle"
+                        [style]="{ 'background-color': '#75777c3d', color: '#ffffff' }"
+                    ></p-avatar>
+                    <p class="element-settings-menu--title">{{ 'settings.profile' | translate }}</p>
+                </div>
+                <div class="element-settings-menu__part"></div>
+            </div>
+            <!--
+            <div
+                *ngIf="hasRight('settings.settingCompany', { mustEqualTo: true })"
+                class="element-settings-menu"
+                [routerLink]="['settings', 'users']"
+            >
+                <div class="element-settings-menu__part">
+                    <p-avatar
+                        icon="pi pi-cog"
+                        size="large"
+                        shape="circle"
+                        [style]="{ 'background-color': '#75777c3d', color: '#ffffff' }"
+                    ></p-avatar>
+                    <p class="element-settings-menu--title">
+                        {{ 'settings.company' | translate }}
+                    </p>
+                </div>
+                <div class="element-settings-menu__part"></div>
+            </div> -->
+
+            <p-divider></p-divider>
+
+            <div class="element-settings-menu">
+                <div class="element-settings-menu__part">
+                    <p-avatar
+                        icon="pi pi-sun"
+                        size="large"
+                        shape="circle"
+                        [style]="{ 'background-color': '#75777c3d', color: '#ffffff' }"
+                    ></p-avatar>
+                    <p class="element-settings-menu--title">
+                        {{ 'global.theme' | translate }}
+                    </p>
+                </div>
+                <div class="element-settings-menu__part">
+                    <div class="theme-container">
+                        <label class="theme-switch">
+                            <input
+                                type="checkbox"
+                                id="theme-slider"
+                                [checked]="currentUser.info.theme.mode === 'light'"
+                                (change)="systemService.toggleTheme()"
+                            />
+                            <span class="theme-slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <p-divider></p-divider>
+
+            <div class="element-settings-menu" (click)="forceReload()">
+                <div class="element-settings-menu__part">
+                    <p-avatar
+                        icon="pi pi-history"
+                        size="large"
+                        shape="circle"
+                        [style]="{ 'background-color': '#75777c3d', color: '#ffffff' }"
+                    ></p-avatar>
+                    <p class="element-settings-menu--title">
+                        {{ 'global.forceReload' | translate }}
+                    </p>
+                </div>
+                <div class="element-settings-menu__part"></div>
+            </div>
+
+            <div class="element-settings-menu" (click)="logout($event)">
+                <div class="element-settings-menu__part">
+                    <p-avatar
+                        icon="pi pi-sign-out"
+                        size="large"
+                        shape="circle"
+                        [style]="{ 'background-color': '#75777c3d', color: '#ffffff' }"
+                    ></p-avatar>
+                    <p class="element-settings-menu--title">{{ 'global.logout' | translate }}</p>
+                </div>
+                <div class="element-settings-menu__part"></div>
+            </div>
+        </div>
+    </ng-template>
+</p-overlayPanel>
+
+<p-overlayPanel #searchOverlay [showCloseIcon]="true">
+    <ng-template pTemplate>
+        <div class="sidebar-search">
+            <p-divider
+                >{{ searchConfig.collection.label.icon }}
+                {{ searchConfig.collection.label.text }}</p-divider
+            >
+            <div
+                *ngFor="let element of searchConfig.elements; index as index"
+                class="sidebar-search__box element-list--box"
+            >
+                <div class="element-list__part">
+                    <app-element-fields
+                        [config]="{
+                            element,
+                            field: searchConfig.field,
+                            collection: searchConfig.collection,
+                            index,
+                            activated: false,
+                            disabled: true
+                        }"
+                    ></app-element-fields>
+                </div>
+
+                <div class="element-list__part">
+                    <button
+                        pButton
+                        icon="pi pi-angle-right"
+                        class="p-button-outlined"
+                        (click)="openCard(element)"
+                    ></button>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-overlayPanel>

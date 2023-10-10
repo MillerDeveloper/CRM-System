@@ -1,0 +1,21 @@
+.user-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+}
+
+.user-item__name {
+    word-wrap: nowrap;
+}
+
+.user-item--method-title {
+    font-size: 1.8rem;
+}
+
+.distribution-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

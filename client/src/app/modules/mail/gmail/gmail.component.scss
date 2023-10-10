@@ -1,0 +1,25 @@
+:host ::ng-deep {
+    .element-list__labels {
+        max-width: 350px;
+    }
+}
+
+.element-list__title {
+    font-size: 12px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.element-list--box {
+    padding: 10px;
+    transition: background 0.3s;
+    cursor: pointer;
+
+    &:hover {
+        background: var(--surface-section);
+    }
+}
+
+.message--text-plain {
+    inline-size: min-content;
+}

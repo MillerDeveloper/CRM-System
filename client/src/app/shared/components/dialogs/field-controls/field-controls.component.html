@@ -1,0 +1,257 @@
+<div class="p-modal">
+    <div class="create-field">
+        <form [formGroup]="fieldForm">
+            <div class="p-field">
+                <span class="p-input-icon-left">
+                    <i class="pi pi-at"></i>
+                    <input
+                        id="label"
+                        type="text"
+                        placeholder="Field label"
+                        pInputText
+                        formControlName="label"
+                        pAutoFocus
+                        [autofocus]="true"
+                    />
+                </span>
+            </div>
+
+            <div class="p-field">
+                <p-dropdown
+                    optionLabel="label"
+                    optionValue="value"
+                    appendTo="body"
+                    formControlName="fieldType"
+                    [placeholder]="'Select field type'"
+                    [options]="fieldTypes"
+                ></p-dropdown>
+            </div>
+
+            <div class="p-field">
+                <textarea
+                    pInputTextarea
+                    [placeholder]="'fields.enterDescription' | translate"
+                    formControlName="description"
+                    [autoResize]="true"
+                ></textarea>
+            </div>
+
+            <div class="p-field">
+                <ng-container [ngSwitch]="fieldForm.value.fieldType">
+                    <p-multiSelect
+                        *ngSwitchCase="'multiselect'"
+                        optionLabel="label"
+                        appendTo="body"
+                        formControlName="defaultValue"
+                        [placeholder]="'Select default value'"
+                        [options]="fieldForm.value.options"
+                    ></p-multiSelect>
+
+                    <p-dropdown
+                        *ngSwitchCase="'select'"
+                        optionLabel="label"
+                        appendTo="body"
+                        formControlName="defaultValue"
+                        [showClear]="true"
+                        [placeholder]="'Select default value'"
+                        [options]="fieldForm.value.options"
+                    ></p-dropdown>
+
+                    <div *ngSwitchCase="'checkbox'" class="field-checkbox">
+                        <p-checkbox
+                            inputId="binary"
+                            formControlName="defaultValue"
+                            [binary]="true"
+                        ></p-checkbox>
+                        <label for="binary">Default value</label>
+                    </div>
+
+                    <div *ngSwitchCase="'rating'" class="field-checkbox">
+                        <p-rating formControlName="defaultValue"></p-rating>
+                    </div>
+
+                    <div *ngSwitchCase="'slider'" class="field-checkbox">
+                        <p-slider formControlName="defaultValue"></p-slider>
+                    </div>
+
+                    <span *ngSwitchCase="'currency'" class="p-float-label">
+                        <p-inputNumber
+                            formControlName="defaultValue"
+                            mode="currency"
+                            currency="USD"
+                        ></p-inputNumber>
+                        <label htmlFor="number-input">Default value</label>
+                    </span>
+
+                    <span *ngSwitchDefault class="p-input-icon-left">
+                        <i class="pi pi-at"></i>
+                        <input
+                            id="defaultValue"
+                            [type]="fieldForm.value.fieldType"
+                            placeholder="Default value"
+                            pInputText
+                            formControlName="defaultValue"
+                        />
+                    </span>
+                </ng-container>
+            </div>
+
+            <ng-container *ngIf="fieldForm.value.fieldType === 'number'">
+                <p-divider></p-divider>
+
+                <div formGroupName="settings">
+                    <div class="p-field">
+                        <p-dropdown
+                            optionLabel="label"
+                            optionValue="value"
+                            appendTo="body"
+                            formControlName="mode"
+                            [showClear]="true"
+                            [placeholder]="'Select mode'"
+                            [options]="modes"
+                            (onChange)="onModeChange()"
+                        ></p-dropdown>
+                    </div>
+
+                    <div formGroupName="prefix">
+                        <div class="p-field">
+                            <p-dropdown
+                                optionLabel="label"
+                                optionValue="value"
+                                appendTo="body"
+                                formControlName="identifier"
+                                [showClear]="true"
+                                [placeholder]="'Select prefix'"
+                                [options]="prefixes"
+                            ></p-dropdown>
+                        </div>
+
+                        <div
+                            *ngIf="fieldForm.value.prefix?.identifier === 'custom'"
+                            class="p-field"
+                        >
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-at"></i>
+                                <input
+                                    type="text"
+                                    placeholder="Prefix value"
+                                    pInputText
+                                    formControlName="value"
+                                />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div formGroupName="suffix">
+                        <div class="p-field">
+                            <p-dropdown
+                                optionLabel="label"
+                                optionValue="value"
+                                appendTo="body"
+                                formControlName="identifier"
+                                [showClear]="true"
+                                [placeholder]="'Select suffix'"
+                                [options]="prefixes"
+                            ></p-dropdown>
+                        </div>
+
+                        <div
+                            *ngIf="fieldForm.value.suffix?.identifier === 'custom'"
+                            class="p-field"
+                        >
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-at"></i>
+                                <input
+                                    type="text"
+                                    placeholder="Suffix value"
+                                    pInputText
+                                    formControlName="value"
+                                />
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container
+                *ngIf="
+                    fieldForm.value.fieldType === 'multiselect' ||
+                    fieldForm.value.fieldType === 'select'
+                "
+            >
+                <div class="field-options">
+                    <p-fieldset styleClass="slim-fieldset" legend="Field options">
+                        <div *ngFor="let option of fieldOptions" class="p-field-group">
+                            <span
+                                *ngIf="config.data.field?.settings?.setColor"
+                                class="p-inputgroup-addon"
+                            >
+                                <div class="option__color-pickers">
+                                    <small class="option__color-pickers--title">BG</small>
+                                    <p-colorPicker
+                                        appendTo="body"
+                                        [ngModelOptions]="{ standalone: true }"
+                                        [(ngModel)]="option.bgColor"
+                                    ></p-colorPicker>
+                                </div>
+
+                                <p-divider styleClass="option__color-pickers--divider"></p-divider>
+
+                                <div class="option__color-pickers">
+                                    <small class="option__color-pickers--title">Text</small>
+                                    <p-colorPicker
+                                        appendTo="body"
+                                        [ngModelOptions]="{ standalone: true }"
+                                        [(ngModel)]="option.textColor"
+                                    ></p-colorPicker>
+                                </div>
+                            </span>
+                            <span class="p-field no-margin">
+                                <input
+                                    type="text"
+                                    pInputText
+                                    pAutoFocus
+                                    [autofocus]="true"
+                                    placeholder="Enter option label"
+                                    [ngModelOptions]="{ standalone: true }"
+                                    [(ngModel)]="option.label"
+                                />
+                            </span>
+                            <span class="p-inputgroup-addon">
+                                <button
+                                    pButton
+                                    icon="pi pi-trash"
+                                    class="p-button-text"
+                                    (click)="deleteOption(option)"
+                                ></button>
+                            </span>
+                        </div>
+
+                        <div class="p-field create-option">
+                            <button
+                                pButton
+                                icon="pi pi-plus"
+                                class="p-button-outlined"
+                                (click)="createOption()"
+                            ></button>
+                        </div>
+                    </p-fieldset>
+                </div>
+            </ng-container>
+        </form>
+    </div>
+
+    <div class="p-modal-controls p-modal-controls--right">
+        <div class="p-modal-controls__part"></div>
+
+        <div class="p-modal-controls__part">
+            <p-button
+                icon="pi pi-check"
+                [label]="modalMode === 'create' ? 'Create' : 'Update'"
+                styleClass="p-button-outline"
+                [disabled]="fieldForm.invalid"
+                (click)="close()"
+            ></p-button>
+        </div>
+    </div>
+</div>

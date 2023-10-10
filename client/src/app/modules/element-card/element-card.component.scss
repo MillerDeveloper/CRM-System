@@ -1,0 +1,100 @@
+@import 'responsive.scss';
+
+.card-content {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+
+    @include md-width {
+        flex-direction: column;
+    }
+}
+
+.card-content__element-fields {
+    flex: 1 1 0%;
+    border-right: 1px solid var(--surface-border);
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 350px;
+    min-width: 300px;
+
+    @include md-width {
+        max-width: 100%;
+        border: none;
+        padding: 0;
+    }
+
+    @include lg-width {
+        gap: 5px;
+        padding-right: 5px;
+        min-width: 250px;
+    }
+}
+
+.card-content__container {
+    flex: 2;
+    position: relative;
+}
+
+.element-fields {
+    margin: 5px 0;
+    padding: 0 7px;
+}
+
+.element-fields--box {
+    margin: 5px 0;
+}
+
+::ng-deep {
+    .card-content__tabView {
+        .p-tabview-nav {
+            li {
+                .p-tabview-nav-link {
+                    padding: 0 1.25rem 1.7rem 1.25rem;
+                    font-size: 1.3rem;
+                    font-weight: 400;
+                }
+            }
+        }
+    }
+
+    .connection__container {
+        .p-panel-header {
+            background: var(--main-color);
+
+            .p-panel-title {
+                font-size: 1.4rem;
+            }
+        }
+    }
+}
+
+.element-connections {
+    padding: 0 7px;
+}
+
+.connect-button {
+    width: 100%;
+    margin: 5px 0;
+}
+
+.activity-timeline {
+    width: 0;
+}
+
+.center-block-message {
+    margin-top: 50px;
+    position: relative;
+}
+
+.connection__wrapper {
+    margin: 5px 0;
+}
+
+.connection__wrapper--show-card {
+    width: 100%;
+    margin: 5px 0;
+}
+

@@ -1,0 +1,99 @@
+<div class="list-view">
+    <div *ngFor="let data of config.elements; index as dataIndex" class="list-view__wrapper"
+        [ngClass]="{ isCompletedStage: data.period === 'completed' }">
+        <ng-container *ngIf="data.tasks">
+            <div class="list-view__header">
+                <div class="list-view__header-part">
+                    <h5 class="list-view__period">{{ getTaskPeriodLabel(data.period) }}</h5>
+                    <ng-container *ngIf="data.period === 'today'">
+                        <p class="list-view__date">{{ today | date : 'dd MMMM' }}</p>
+                        <small>*</small>
+                    </ng-container>
+                    <p class="list-view__quantity">
+                        {{ data.tasks.length }} {{ 'tasks.title' | translate | lowercase }}
+                    </p>
+                </div>
+
+                <div class="list-view__header-part">
+                    <ng-container *ngIf="data.period === 'completed'; else taskNotCompleted">
+                        <button pButton pRipple type="button" [icon]="
+                                        isCompletedTasksOpen
+                                            ? 'pi pi-chevron-up'
+                                            : 'pi pi-chevron-down'
+                                    " class="p-button-outlined"
+                            (click)="isCompletedTasksOpen = !isCompletedTasksOpen"></button>
+                    </ng-container>
+                    <ng-template #taskNotCompleted>
+                        <button *ngIf="!isCustomPeriod(data.period)" pButton pRipple type="button" icon="pi pi-plus"
+                            class="p-button-outlined" (click)="onCreateTask.emit(data.period)"></button>
+                    </ng-template>
+                </div>
+            </div>
+
+            <div *ngIf="
+                            (isCompletedTasksOpen && data.period === 'completed') ||
+                            data.period !== 'completed'
+                        " class="list-view__content">
+                <div *ngFor="let task of data.tasks; index as taskIndex"
+                    (dblclick)="openCard.emit({task, dataIndex, taskIndex})" class="task-box element-list--box">
+                    <div class="task-box__part element-list__part">
+                        <p-radioButton [ngModel]="data.period" [value]="
+                                        data.period === 'completed' ? 'completed' : 'notCompleted'
+                                    " [disabled]="data.period === 'completed'"
+                            (onClick)="completeTask(dataIndex, taskIndex)"></p-radioButton>
+                        <p class="task-box--title">{{ task.title }}</p>
+                        <p-chip *ngIf="data.period !== 'completed'" [label]="
+                                        ('tasks.due' | translate) +
+                                        ': ' +
+                                        getDaysFromToday(task.endAt)
+                                    " [styleClass]="
+                                        'task-box--endAt ' +
+                                        (isTaskOverdue(task.endAt) ? 'isOverdue' : '')
+                                    "></p-chip>
+                    </div>
+
+                    <div class="task-box__part element-list__part">
+                        <ng-container *ngIf="!config.isConnectedTasks">
+                            <ng-container *ngFor="
+                                            let connection of task.connections;
+                                            index as connectionIndex
+                                        ">
+                                <ng-container *ngFor="
+                                                let element of connection.elements;
+                                                index as connectionElementIndex
+                                            ">
+                                    <ng-container *ngIf="
+                                                    collectionElementService.getConnectionLabel(
+                                                        connection.collectionRef,
+                                                        element
+                                                    ) as label
+                                                ">
+                                        <p-chip styleClass="task-box__connected-to" icon="pi pi-arrow-right-arrow-left"
+                                            [label]="label" (click)="openElemCard(connection, element)"></p-chip>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+
+                        <div>
+                            {{ task.endAt | date : 'dd.MM.yyyy' }}
+                        </div>
+
+                        <div class="active-users">
+                            <app-responsibles-group [config]="{
+                                            responsibles: task.responsibles,
+                                            mapBy: 'data'
+                                        }"></app-responsibles-group>
+                        </div>
+
+                        <button pButton pRipple type="button" icon="pi pi pi-ellipsis-v"
+                            class="p-button-rounded p-button-text"
+                            (click)="selectedTask = task; menu.toggle($event)"></button>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
+
+<p-menu #menu appendTo="body" [popup]="true" [model]="taskSettingsMenu"></p-menu>

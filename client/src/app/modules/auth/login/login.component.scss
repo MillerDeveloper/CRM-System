@@ -1,0 +1,20 @@
+.select-company__box {
+    width: fit-content;
+    padding: 50px;
+    border: 1px solid var(--surface-border);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+
+    &:hover {
+        background: var(--surface-section);
+    }
+}
+
+.select-company__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}

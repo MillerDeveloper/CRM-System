@@ -1,0 +1,36 @@
+<section *ngIf="currentUser" class="mail">
+    <app-header
+        *ngIf="!loadingConfig.isLoadingData"
+        [config]="{ user: currentUser, mail: selectedMail }"
+        (onConnectMail)="onConnectMail()"
+        (onSelectMail)="onSelectMail($event)"
+        (onSendMail)="onSendMail()"
+    ></app-header>
+
+    <ng-container
+        *ngIf="selectedMail && !loadingConfig.isLoadingData"
+        [ngSwitch]="selectedMail.service.name"
+    >
+        <app-gmail [config]="{ mail: selectedMail }"></app-gmail>
+    </ng-container>
+
+    <div
+        *ngIf="!currentUser.integrations?.mail || currentUser.integrations?.mail.length === 0"
+        class="create-view center-block-position"
+    >
+        <h3 class="center-block--title">
+            {{ 'mail.noOneMailConnectedTitle' | translate }}
+        </h3>
+        <p class="center-block--description">
+            {{ 'mail.noOneMailConnectedDescription' | translate }}
+        </p>
+
+        <button
+            pButton
+            class="p-button-outlined"
+            icon="pi pi-plus"
+            [label]="'global.create' | translate"
+            (click)="onConnectMail()"
+        ></button>
+    </div>
+</section>

@@ -1,0 +1,49 @@
+<div *ngIf="config?.fieldForm" (click)="toggleOp($event)">
+    <p class="discount--value primary-field-text">
+        {{ config.fieldForm.value.fieldValue }}
+        {{ getCurrency() }}
+    </p>
+</div>
+
+<p-overlayPanel #op>
+    <ng-template pTemplate>
+        <form [formGroup]="config.fieldForm">
+            <div class="discount-box__wrapper">
+                <div class="p-field">
+                    <p-inputNumber
+                        suffix="%"
+                        [mode]="'decimal'"
+                        [max]="100"
+                        [placeholder]="config.field.label + ' (%)'"
+                        (onInput)="calcDiscount($event)"
+                    >
+                    </p-inputNumber>
+                </div>
+
+                <p-divider align="center">
+                    <span class="p-tag">Or</span>
+                </p-divider>
+
+                <div class="p-field">
+                    <p-inputNumber
+                        formControlName="fieldValue"
+                        [currency]="getCurrency()"
+                        [mode]="'currency'"
+                        [max]="elementPrice * elementQuantity"
+                        [placeholder]="config.field.label"
+                    >
+                    </p-inputNumber>
+                </div>
+            </div>
+        </form>
+
+        <div class="p-modal-controls p-modal-controls--right">
+            <p-button
+                icon="pi pi-save"
+                styleClass="p-button-outlined"
+                [label]="'global.save' | translate"
+                (onClick)="closeOp($event)"
+            ></p-button>
+        </div>
+    </ng-template>
+</p-overlayPanel>

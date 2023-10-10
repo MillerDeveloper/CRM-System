@@ -1,0 +1,101 @@
+<div class="p-modal">
+    <div class="import">
+        <div *ngIf="!state.isUploadedFile" class="import-box">
+            <div class="create-view center-block-position">
+                <h3 class="center-block--title">Upload file</h3>
+                <p class="center-block--description">Upload file with your records.</p>
+                <app-upload-button
+                    [config]="{ multiple: false, setFormData: false }"
+                    (uploadFiles)="uploadFiles($event)"
+                ></app-upload-button>
+            </div>
+        </div>
+        <div *ngIf="!state.isSelectedFields && state.isUploadedFile" class="select-fields">
+            <div class="select-fields__header">
+                <h3 class="select-fields__header--title">Select the fields</h3>
+                <h3 class="select-fields__header--description">
+                    Select the fields corresponding to the columns in your file
+                </h3>
+            </div>
+
+            <div class="select-fields__content">
+                <div *ngFor="let column of columns" class="select-field__wrapper">
+                    <div class="select-field__part">
+                        <i class="pi pi-file-excel select-field--icon"></i>
+                        <p>{{ column.label }}</p>
+                    </div>
+
+                    <div class="select-field__part select-field__box">
+                        <span class="p-field no-margin">
+                            <p-dropdown
+                                optionLabel="label"
+                                appendTo="body"
+                                [placeholder]="'Select crm field'"
+                                [options]="config.data.fields"
+                                [(ngModel)]="column.selectedField"
+                            ></p-dropdown>
+                        </span>
+
+                        <button
+                            pButton
+                            class="p-button-outlined"
+                            icon="pi pi-times"
+                            (click)="removeColumn(column)"
+                        ></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="state.isSelectedFields" class="compare-fields">
+            <ng-container *ngFor="let key of getDictionaryArray()">
+                <ng-container *ngFor="let dictionaryElement of dictionary[key]">
+                    <div class="compare-fields__box">
+                        <div class="compare-fields__part">
+                            <p>{{ dictionaryElement.fieldLabel }}</p>
+                            <small>Field: {{ key }}</small>
+                        </div>
+                        <div class="compare-fields__part">
+                            <ng-container [ngSwitch]="dictionaryElement.selectedField.fieldType">
+                                <div class="p-field no-margin">
+                                    <ng-container *ngSwitchCase="'select'">
+                                        <p-dropdown
+                                            optionLabel="label"
+                                            appendTo="body"
+                                            [placeholder]="'Select value'"
+                                            [options]="dictionaryElement.selectedField.options"
+                                            [(ngModel)]="dictionaryElement.value"
+                                        ></p-dropdown>
+                                    </ng-container>
+
+                                    <ng-container *ngSwitchCase="'multiselect'">
+                                        <p-multiSelect
+                                            optionLabel="label"
+                                            appendTo="body"
+                                            [defaultLabel]="'Select value'"
+                                            [options]="dictionaryElement.selectedField.options"
+                                            [(ngModel)]="
+                                                dictionaryElement[dictionaryElement.fieldLabel]
+                                            "
+                                        ></p-multiSelect>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </div>
+    </div>
+
+    <div class="p-modal-controls p-modal-controls--right">
+        <p-button
+            *ngIf="state.isUploadedFile"
+            icon="pi pi-check"
+            label="Upload"
+            styleClass="p-button-outline"
+            [disabled]="state.isSelectedFields && !isDictionaryFilled()"
+            (click)="nextStep()"
+        ></p-button>
+    </div>
+</div>

@@ -1,0 +1,104 @@
+<section class="analytics">
+    <app-header (filter)="filter($event)"></app-header>
+
+    <div class="analytics__collection-select">
+        <p-tabView (onChange)="onCollectionChange($event)">
+            <p-tabPanel
+                *ngFor="let collection of collections"
+                [header]="collection.label.text"
+            ></p-tabPanel>
+        </p-tabView>
+    </div>
+
+    <div class="analytics__wrapper">
+        <div class="analytics__container">
+            <div class="analytics__box counter-box">
+                <h3 class="analytics__box--title">
+                    {{ data.count.total }} {{ 'analytics.recordsPerPeriod' | translate }}
+                </h3>
+            </div>
+            <div class="analytics__box counter-box">
+                <h3 class="analytics__box--title">
+                    {{ data.count.success }} {{ 'analytics.successDeals' | translate }}
+                </h3>
+            </div>
+            <div class="analytics__box counter-box">
+                <h3 class="analytics__box--title">
+                    {{ data.count.undecided }} {{ 'analytics.undecidedDeals' | translate }}
+                </h3>
+            </div>
+            <div class="analytics__box counter-box">
+                <h3 class="analytics__box--title">
+                    {{ data.count.failures }} {{ 'analytics.failuresDeals' | translate }}
+                </h3>
+            </div>
+        </div>
+
+        <div class="analytics__container">
+            <div class="analytics__box" [style.flex]="2">
+                <h2 class="analytics__box--title">{{ 'analytics.userPerCount' | translate }}</h2>
+                <p-chart
+                    type="bar"
+                    [data]="data.responsibles"
+                    [options]="horizontalOptions"
+                ></p-chart>
+            </div>
+            <div class="analytics__box">
+                <h2 class="analytics__box--title">{{ 'global.countries' | translate }}</h2>
+                <p-chart type="pie" [data]="data.countries" [options]="basicOptions"></p-chart>
+            </div>
+        </div>
+        <div class="analytics__container">
+            <div *ngIf="data.count.income as income" class="analytics__box">
+                <h3 class="analytics__box--title">
+                    {{ income }} {{ 'analytics.incomePerPeriod' | translate }}
+                </h3>
+            </div>
+            <div *ngIf="data.count.averagePrice as averagePrice" class="analytics__box">
+                <h3 class="analytics__box--title">
+                    {{ averagePrice }} {{ 'analytics.averagePricePerPeriod' | translate }}
+                </h3>
+            </div>
+            <div *ngIf="data.count.averageDiscount as averageDiscount" class="analytics__box">
+                <h3 class="analytics__box--title">
+                    {{ averageDiscount }} {{ 'analytics.averageDiscountPerPeriod' | translate }}
+                </h3>
+            </div>
+            <div *ngIf="data.count.averageAge as averageAge" class="analytics__box">
+                <h3 class="analytics__box--title">
+                    {{ averageAge }} {{ 'analytics.averageAgePerPeriod' | translate }}
+                </h3>
+            </div>
+        </div>
+        <div class="analytics__container">
+            <div class="analytics__box">
+                <h2 class="analytics__box--title">{{ 'global.cities' | translate }}</h2>
+                <p-chart type="pie" [data]="data.cities" [options]="basicOptions"></p-chart>
+            </div>
+            <div class="analytics__box">
+                <h2 class="analytics__box--title">{{ 'analytics.countPerMonth' | translate }}</h2>
+                <p-chart type="line" [data]="data.countPerMonth" [options]="basicOptions"></p-chart>
+            </div>
+            <div class="analytics__box">
+                <h2 class="analytics__box--title">{{ 'global.genders' | translate }}</h2>
+                <p-chart type="doughnut" [data]="data.genders" [options]="basicOptions"></p-chart>
+            </div>
+        </div>
+        <div class="analytics__container">
+            <div class="analytics__box">
+                <h2 class="analytics__box--title">{{ 'global.categories' | translate }}</h2>
+                <p-chart type="radar" [data]="data.categories" [options]="basicOptions"></p-chart>
+            </div>
+            <div [style.flex]="2" class="analytics__box">
+                <h2 class="analytics__box--title">
+                    {{ 'analytics.responsiblesPerIncome' | translate }}
+                </h2>
+                <p-chart
+                    type="bar"
+                    [data]="data.responsiblesPerIncome"
+                    [options]="horizontalOptions"
+                ></p-chart>
+            </div>
+        </div>
+    </div>
+</section>

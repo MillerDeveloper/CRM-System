@@ -1,0 +1,189 @@
+@import 'responsive.scss';
+
+.tasks.tasks-connected {
+    .list-view__wrapper {
+        margin-top: 0;
+    }
+}
+
+
+
+.task-box--title {
+    margin: 0 0 2px 0;
+    font-size: 1.4rem;
+    align-self: center;
+}
+
+:host ::ng-deep {
+    .task-box--endAt {
+        color: white;
+        background: var(--main-color);
+
+        &.isOverdue {
+            background: red;
+        }
+    }
+
+    .task-box__connected-to {
+        cursor: pointer;
+        padding: 0 1.75rem;
+        border: 2px solid var(--main-color);
+
+        .p-chip-icon {
+            margin-right: 0.8rem;
+        }
+    }
+}
+
+::ng-deep {
+    .p-sidebar.task-card {
+        width: 80vw;
+
+        .p-sidebar-content {
+            overflow-x: hidden;
+        }
+
+        .p-sidebar-footer {
+            padding: 0;
+        }
+
+        @include md-width {
+            width: 100vw;
+        }
+    }
+
+    .task-card__wrapper--divider {
+        @include sm-width {
+            display: none;
+        }
+    }
+
+    .task-card__checkboxes {
+        margin-top: 15px;
+    }
+
+    .checkbox--completed {
+        text-decoration: line-through;
+    }
+
+    .task-tabs {
+        position: relative;
+        margin-top: 25px;
+
+        .p-tabview-nav {
+            border-width: 0 0 1px 0;
+
+            li {
+                .p-tabview-nav-link {
+                    background: transparent;
+                }
+            }
+        }
+
+        .p-tabview-panels {
+            background: transparent;
+        }
+
+        .center-block-position {
+            position: relative;
+            transform: none;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+    }
+}
+
+.field-checkbox {
+    margin: 5px 0;
+}
+
+//
+
+.task-card__part:first-child {
+    flex: 2;
+    min-width: 400px;
+    background: var(--surface-card);
+    padding: 15px;
+    border-radius: 8px;
+    height: min-content;
+
+    @include xl-width {
+        min-width: 175px;
+    }
+}
+
+.task-card__content {
+    .p-field {
+        margin-top: 25px;
+    }
+}
+
+.task-card__wrapper {
+    display: flex;
+    margin-top: 10px;
+
+    @include xl-width {
+        gap: 5px;
+    }
+
+    @include sm-width {
+        flex-direction: column;
+    }
+}
+
+.task-card__header {
+    width: 100%;
+    margin-right: 10px;
+    background: var(--surface-card);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.task-card__info {
+    min-width: 275px;
+    background: var(--surface-card);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.task-card__description {
+    margin-top: 15px;
+    min-height: 45px;
+}
+
+.task-card--button {
+    margin-top: 10px;
+}
+
+.task-card__chat {
+    position: relative;
+    overflow: visible;
+    display: block;
+    width: 100%;
+    min-height: 150px;
+}
+
+.p-contenteditable {
+    border: 2px solid var(--surface-section);
+}
+
+.task-card__info--box {
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    padding: 12px;
+
+    p {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+
+    &.info {
+        background: var(--main-color);
+    }
+
+    &.danger {
+        background: red;
+    }
+}

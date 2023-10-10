@@ -1,0 +1,35 @@
+.avaible-fields__wrapper {
+    max-height: 400px;
+    overflow: auto;
+}
+
+.avaible-fields__box {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 5px;
+    min-width: 200px;
+    margin-top: 5px;
+
+    &:hover {
+        background: var(--surface-section);
+    }
+}
+
+.avaible-fields--icon {
+    font-size: 1.2rem;
+}
+
+.avaible-fields--label {
+    margin: 0;
+}
+
+.avaible-fields--title {
+    font-size: 1.6rem;
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 5px;
+}

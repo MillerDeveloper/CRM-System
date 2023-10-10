@@ -1,0 +1,105 @@
+<div class="connections">
+    <div *ngIf="
+        config?.element &&
+            collectionElementService.getElementsByConnectionId(
+                collectionRef?._id,
+                config.element.connections
+            ) as elements
+        " class="connections__wrapper">
+        <ng-container *ngIf="elements.length !== 0; else noOneConnection">
+            <ng-container *ngFor="let element of elements; index as i">
+                <div class="field-box connection-element__box" (click)="
+                        collectionElementService.openCard(element.data, {
+                            collectionRef: collectionRef._id,
+                            elementId: element.data._id,
+                            force: true
+                        })
+                    ">
+                    <div class="connection-box">
+                        <div class="connection-box__part">
+                            <i class="pi pi-user"></i>
+                            <p class="field-box--label">
+                                {{ getElementLabel(element.data) }}
+                            </p>
+                        </div>
+
+                        <div class="connection-box__part" [style.gap]="0">
+                            <span pBadge class="comment-badge" [badgeDisabled]="element.comments?.length === 0"
+                                [value]="element.comments?.length">
+                                <button pButton pRipple type="button" icon="pi pi-comment" class="p-button-text"
+                                    (click)="onOpenComments($event, element)"></button>
+                            </span>
+
+                            <button pButton pRipple type="button" icon="pi pi-times" class="p-button-text"
+                                (click)="removeConnection($event, i)"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="i === elements.length - 1" class="field-box add-connection"
+                    (click)="onConnectToElement($event)">
+                    <p class="field-box--label">
+                        <i class="pi pi-plus"></i>
+                    </p>
+                </div>
+            </ng-container>
+        </ng-container>
+        <ng-template #noOneConnection>
+            <div class="field-box">
+                <p class="field-box--label" (click)="onConnectToElement($event)">
+                    <i class="pi pi-plus"></i>
+                    No connection
+                </p>
+            </div>
+        </ng-template>
+    </div>
+</div>
+
+<p-overlayPanel #comments>
+    <ng-template pTemplate>
+        <div class="comments">
+            <div *ngIf="selectedConnectionElement.comments.length > 0; else noOneComment" class="comments__wrapper">
+                <ng-container *ngFor="
+                        let comment of selectedConnectionElement.comments;
+                        index as i;
+                        let last = last
+                    ">
+                    <div class="comment__box">
+                        <div class="comment__box--header">
+                            <div class="comment__box--user-info">
+                                <p-avatar label="P" size="large"></p-avatar>
+                                <p class="comment__box--user-name">
+                                    {{ comment.createdBy?.name?.full }}
+                                </p>
+                            </div>
+
+                            <button *ngIf="userService.currentUser._id === comment.createdBy._id" pButton
+                                class="p-button-outlined p-button-rounded" icon="pi pi-times"
+                                (click)="removeComment(i)"></button>
+                        </div>
+
+                        <div class="comment__box--text">
+                            <p>{{ comment.text }}</p>
+                        </div>
+                        <time class="comment__box--time">{{
+                            comment.createdAt | date : 'dd.MM.yyyy | HH:mm'
+                            }}</time>
+                    </div>
+
+                    <p-divider *ngIf="!last"></p-divider>
+                </ng-container>
+            </div>
+            <ng-template #noOneComment>
+                <h3 [style.marginTop]="'0px'">
+                    {{ 'chat.noOneComment' | translate }}
+                </h3>
+            </ng-template>
+
+            <div class="comments__create">
+                <textarea #commentInput pInputTextarea [cols]="35" [rows]="2" [autoResize]="true"></textarea>
+                <button pButton class="p-button-outlined p-button-rounded" icon="pi pi-send"
+                    (click)="createComment(commentInput.value); commentInput.value = ''"></button>
+            </div>
+        </div>
+    </ng-template>
+</p-overlayPanel>

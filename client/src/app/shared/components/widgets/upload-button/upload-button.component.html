@@ -1,0 +1,14 @@
+<p-fileUpload
+    #fileUpload
+    mode="basic"
+    name="files"
+    [accept]="config.accept || ''"
+    [chooseLabel]="'global.upload' | translate"
+    [disabled]="config.disabled || false"
+    [maxFileSize]="maxFileSize"
+    [customUpload]="true"
+    [fileLimit]="35"
+    [auto]="true"
+    [multiple]="config.multiple"
+    (uploadHandler)="uploadHandler($event)"
+></p-fileUpload>

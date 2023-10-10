@@ -1,0 +1,64 @@
+:host ::ng-deep .p-rowgroup-footer td {
+    font-weight: 700;
+}
+
+:host ::ng-deep .p-datatable .p-rowgroup-header {
+    background: var(--main-color);
+
+    span {
+        font-weight: 700;
+    }
+
+    .p-row-toggler {
+        vertical-align: middle;
+        margin-right: 0.25rem;
+    }
+}
+
+.settings-table {
+    min-height: 100%;
+}
+
+.users-groups__box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid var(--surface-border);
+    border-radius: 4px;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+}
+
+.users-groups__part {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.users-groups--name {
+    margin: 0;
+    line-height: 22px;
+}
+
+.users-groups--description {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--secondary-text-color);
+}
+
+.users__container {
+    margin-top: 25px;
+}
+
+.users__container--header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}

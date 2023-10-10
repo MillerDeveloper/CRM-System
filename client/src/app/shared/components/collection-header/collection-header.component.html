@@ -1,0 +1,63 @@
+<header *ngIf="config?.collection" class="header">
+    <div class="header__container">
+        <div class="collection-info">
+            <span class="collection-info--emoji" (click)="isPickEmoji = true">{{
+                config.collection.label.icon
+                }}</span>
+            <emoji-mart *ngIf="isPickEmoji" emoji="point_up" [title]="'collection.pickEmoji' | translate"
+                [style]="{ position: 'absolute', top: '20px', left: '20px' }" [autoFocus]="true"
+                (emojiSelect)="selectEmoji($event)" [isNative]="true"></emoji-mart>
+
+            <div class="header__container--name">
+                <p-inplace styleClass="collection-info--name" [closable]="true"
+                    (onDeactivate)="updateCollection.emit(config.collection)">
+                    <ng-template pTemplate="display">
+                        {{ config.collection?.label.text }}
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <div class="header__container--inplace-content">
+                            <input #collectionName class="collection-info--name-field" type="text" pInputText pAutoFocus
+                                required [autofocus]="true" [size]="collectionName.value.length - 1"
+                                [(ngModel)]="config.collection.label.text" />
+
+                            <textarea pInputTextarea class="collection-info--description-field"
+                                [placeholder]="'fields.description' | translate" [autoResize]="true"
+                                [(ngModel)]="config.collection.description"></textarea>
+                        </div>
+                    </ng-template>
+                </p-inplace>
+
+                <i *ngIf="config.collection?.description" class="pi pi-question-circle header__container--icon"
+                    [pTooltip]="config.collection.description"></i>
+            </div>
+        </div>
+
+        <div class="crm-controls">
+            <div class="active-users">
+                <p-avatarGroup>
+                    <div *ngFor="let user of activeUsers; index as i" [pTooltip]="user.name.full">
+                        <p-avatar *ngIf="i <= 5; else manyUsers" size="large" shape="circle"
+                            [label]="systemService.avatarLabel(user)" [image]="user.avatar?.url"></p-avatar>
+                        <ng-template #manyUsers>
+                            <p-avatar shape="circle" size="large" [label]="'+' + (activeUsers.length - 6)"
+                                [style]="{ 'background-color': '#9c27b0', color: '#ffffff' }"></p-avatar>
+                        </ng-template>
+                    </div>
+                </p-avatarGroup>
+            </div>
+
+            <button *ngIf="
+                    userService.hasSystemRight({
+                        rightPath: 'collections.delete',
+                        rights: this.userService.currentUser.rights.system?.modules,
+                        mustEqualTo: 'allowed'
+                    })
+                " pButton pRipple type="button" icon="pi pi pi-ellipsis-v"
+                class="p-button-rounded p-button-text open-collection-settings" (click)="menu.toggle($event)"></button>
+        </div>
+    </div>
+</header>
+
+<p-menu #menu appendTo="body" [popup]="true" [model]="collectionSettingsMenu"></p-menu>
+
+<p-divider styleClass="header-divider"></p-divider>

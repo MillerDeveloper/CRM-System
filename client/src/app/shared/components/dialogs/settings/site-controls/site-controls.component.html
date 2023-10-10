@@ -1,0 +1,134 @@
+<div class="p-modal">
+    <form [formGroup]="siteForm">
+        <ng-container *ngIf="!stage.isFilledInfoFields">
+            <div class="p-field">
+                <span class="p-input-icon-left">
+                    <i class="pi pi-check-circle"></i>
+                    <input
+                        type="text"
+                        placeholder="Enter url of your site"
+                        pInputText
+                        formControlName="url"
+                    />
+                </span>
+            </div>
+
+            <div class="p-field">
+                <textarea
+                    pInputTextarea
+                    formControlName="description"
+                    placeholder="Enter site description"
+                    [cols]="35"
+                    [rows]="2"
+                    [autoResize]="true"
+                ></textarea>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="stage.isFilledInfoFields && !stage.isFilledDuplicateFields">
+            <div formGroupName="distribution">
+                <div class="distribution-box">
+                    <p class="user-item--method-title">Distribution method</p>
+                    <p-selectButton
+                        formControlName="method"
+                        optionLabel="name"
+                        optionValue="value"
+                        [options]="methods"
+                    ></p-selectButton>
+                </div>
+
+                <div class="p-field">
+                    <p-listbox
+                        filterBy="name.full"
+                        [options]="data.users"
+                        [(ngModel)]="siteForm.value.distribution.users"
+                        [ngModelOptions]="{ standalone: true }"
+                        [metaKeySelection]="false"
+                        [checkbox]="true"
+                        [filter]="true"
+                        [multiple]="true"
+                        [dataKey]="'data._id'"
+                        [listStyle]="{ 'max-height': '400px' }"
+                    >
+                        <ng-template pTemplate="header"> Users for distribution </ng-template>
+                        <ng-template pTemplate="filter" let-options="options">
+                            <div class="p-inputgroup">
+                                <span class="p-inputgroup-addon"><i class="pi pi-search"></i></span>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    placeholder="Filter"
+                                    [(ngModel)]="filterValue"
+                                    [ngModelOptions]="{ standalone: true }"
+                                    (keyup)="options.filter($event)"
+                                />
+                            </div>
+                            <button pButton icon="pi pi-times" class="p-button-text"></button>
+                        </ng-template>
+                        <ng-template let-user pTemplate="item">
+                            <div class="user-item">
+                                <p class="user-item__name">{{ user.data.name.full }}</p>
+
+                                <div
+                                    *ngIf="siteForm.value.distribution.method !== 'queue'"
+                                    class="p-field"
+                                >
+                                    <span>Coefficient: {{ user.coefficient }}%</span>
+                                    <p-slider
+                                        [step]="5"
+                                        [min]="5"
+                                        [max]="100"
+                                        [(ngModel)]="user.coefficient"
+                                        [ngModelOptions]="{ standalone: true }"
+                                    ></p-slider>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <!-- <ng-template pTemplate="footer"></ng-template> -->
+                    </p-listbox>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="stage.isFilledDuplicateFields">
+            <div formGroupName="duplicates" class="distribution-box">
+                <p class="user-item--method-title">Action on duplicate</p>
+                <p-selectButton
+                    formControlName="action"
+                    optionLabel="name"
+                    optionValue="value"
+                    [options]="actions"
+                ></p-selectButton>
+            </div>
+
+            <ng-container *ngIf="siteForm.value.duplicates.action !== 'nothing'">
+                <div class="p-field">
+                    <p-dropdown
+                        optionLabel="label.text"
+                        appendTo="body"
+                        formControlName="collectionRef"
+                        [options]="collections"
+                        (ngModelChange)="setFields()"
+                    ></p-dropdown>
+                </div>
+
+                <div formGroupName="duplicates" class="p-field">
+                    <p-multiSelect
+                        optionLabel="label"
+                        appendTo="body"
+                        formControlName="fields"
+                        [options]="fields"
+                        (onPanelShow)="setFields()"
+                    ></p-multiSelect>
+                </div>
+            </ng-container>
+        </ng-container>
+    </form>
+
+    <div class="p-modal-controls p-modal-controls--right">
+        <p-button
+            icon="pi pi-plus"
+            [label]="'global.next' | translate"
+            [disabled]="siteForm.invalid"
+            (onClick)="nextStep()"
+        ></p-button>
+    </div>
+</div>

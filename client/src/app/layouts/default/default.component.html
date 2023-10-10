@@ -1,0 +1,23 @@
+<div class="main">
+    <p-splitter
+        [styleClass]="'content-splitter ' + (isClosedSidebar ? 'sidebar-closed' : 'sidebar-open')"
+        panelStyleClass="content-split-panel"
+        [stateKey]="'layoutSizes'"
+        (onResizeStart)="onResizeStart()"
+        (onResizeEnd)="onResizeEnd()"
+    >
+        <ng-template pTemplate>
+            <div #sidebar class="sidebar">
+                <app-main-sidebar
+                    [config]="{isClosedSidebar}"
+                    (toggleSidebar)="toggleSidebar()"
+                ></app-main-sidebar>
+            </div>
+        </ng-template>
+        <ng-template pTemplate>
+            <section class="content">
+                <router-outlet></router-outlet>
+            </section>
+        </ng-template>
+    </p-splitter>
+</div>

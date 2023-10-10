@@ -1,0 +1,43 @@
+<div class="files-header module-header">
+    <div class="module-header__wrapper">
+        <div class="module-header__part">
+            <p class="module-header--title">
+                {{ 'mail.title' | translate }}
+            </p>
+
+            <button
+                pButton
+                class="p-button-text"
+                icon="pi pi-send"
+                (click)="onSendMail.emit()"
+            ></button>
+        </div>
+
+        <div class="module-header__part">
+            <p-dropdown
+                appendTo="body"
+                optionLabel="email"
+                [(ngModel)]="config.mail"
+                [options]="config.user?.integrations.mail"
+                (onChange)="onSelectMail.emit($event)"
+            >
+                <ng-template pTemplate="selectedItem">
+                    <div>Gmail ({{ config.mail.email }})</div>
+                </ng-template>
+                <ng-template let-mail pTemplate="item">
+                    <div>{{ mail.email }}</div>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <div class="p-field no-margin">
+                        <button
+                            pButton
+                            class="p-button-text"
+                            [label]="'mail.connectMail' | translate"
+                            (click)="onConnectMail.emit()"
+                        ></button>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+        </div>
+    </div>
+</div>

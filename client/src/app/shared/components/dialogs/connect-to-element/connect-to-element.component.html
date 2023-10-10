@@ -1,0 +1,53 @@
+<div class="p-modal">
+    <div class="connect">
+        <ng-container *ngIf="state.isSelectCollection">
+            <div class="selection-type">
+                <div class="selection-type__wrapper">
+                    <div
+                        *ngFor="let collection of collections"
+                        class="selection-type__box"
+                        (click)="onSelectCollection(collection)"
+                    >
+                        <div class="selection-type--title">{{ collection.label.text }}</div>
+                        <div class="selection-type--description">{{ collection.description }}</div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="state.isSelectElements">
+            <app-table-view
+                [config]="{
+                    loadingConfig,
+                    collection: selectedCollection,
+                    elements,
+                    selection: selectedElements,
+                    fetchConfig: fetchConfig,
+                    isActiveControls: false
+                }"
+                (fetchData)="fetchElements($event)"
+            ></app-table-view>
+        </ng-container>
+    </div>
+
+    <div *ngIf="!state.isSelectCollection" class="p-modal-controls">
+        <div class="p-modal-controls__part">
+            <p-button
+                *ngIf="config.data.showFieldsSettings"
+                icon="pi pi-cog"
+                styleClass="p-button-outline"
+                (click)="settingFields()"
+            ></p-button>
+        </div>
+
+        <div class="p-modal-controls__part">
+            <p-button
+                icon="pi pi-check"
+                [label]="'global.next' | translate"
+                styleClass="p-button-outline"
+                [disabled]="state.isSelectElements && selectedElements.length === 0"
+                (click)="nextStep()"
+            ></p-button>
+        </div>
+    </div>
+</div>

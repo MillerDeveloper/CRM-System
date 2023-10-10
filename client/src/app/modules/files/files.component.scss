@@ -1,0 +1,70 @@
+@import 'responsive.scss';
+
+.files__wrapper {
+    margin-top: 25px;
+}
+
+.connected-files .list-view__box {
+    padding: 5px;
+}
+
+.list-view__box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    transition: all 0.3s;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    gap: 5px;
+
+    @include sm-width {
+        padding: 5px 0px;
+    }
+
+    &:hover {
+        background: var(--surface-section);
+    }
+}
+
+.list-view__part {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    @include sm-width {
+        gap: 5px;
+    }
+}
+
+.list-view__box--created-at {
+    color: var(--secondary-text-color);
+    font-weight: 200;
+}
+
+.list-view__box--size, .list-view__box--quantity {
+    font-weight: 200;
+    color: var(--secondary-text-color);
+}
+
+.list-view__box--icon {
+    font-size: 1.6rem;
+    border: 2px solid var(--main-color);
+    padding: 7px;
+    border-radius: 50%;
+    color: var(--main-color);
+
+    @include sm-width {
+        font-size: 1rem;
+    }
+}
+
+.list-view__box--title {
+    font-size: 1.2rem;
+    font-weight: 550;
+
+    @include sm-width {
+        font-size: 1rem;
+    }
+}

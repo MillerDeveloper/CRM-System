@@ -1,0 +1,18 @@
+.p-field__box {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+:host ::ng-deep {
+    .p-chip {
+        margin: 5px;
+        font-size: 1.2rem;
+    }
+}
+
+.phones {
+    cursor: pointer;
+    display: flex;
+    flex-wrap: wrap;
+}

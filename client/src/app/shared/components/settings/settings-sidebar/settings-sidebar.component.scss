@@ -1,0 +1,49 @@
+@import 'responsive.scss';
+
+:host ::ng-deep {
+    .sidebar {
+        .p-divider {
+            @include md-width {
+                padding: 0;
+            }
+        }
+
+        .p-divider-content {
+            @include md-width {
+                padding: 0;
+                text-align: center;
+                width: 100%;
+                font-size: 0.9rem;
+            }
+        }
+    }
+}
+
+.sidebar__company-info--back {
+    margin-right: 10px;
+}
+
+.sidebar-menu {
+    margin-top: 0;
+}
+
+.sidebar-menu--element-text {
+    @include md-width {
+        display: none;
+    }
+}
+
+.sidebar__company-info--title {
+    @include md-width {
+        display: none;
+    }
+}
+
+.sidebar__company-info--back {
+    @include md-width {
+        line-height: 52px;
+        text-align: center;
+        width: 100%;
+        margin-right: 0;
+    }
+}

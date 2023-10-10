@@ -1,0 +1,53 @@
+<div class="p-modal">
+    <ng-container *ngIf="initialFields.length > 0; else noOneInitialField">
+        <div *ngFor="let field of initialFields; index as i" class="p-field">
+            <app-element-fields
+                [config]="{
+                    element: {},
+                    field: field,
+                    collection: {},
+                    index: i,
+                    activated: true,
+                    defaultStyle: true
+                }"
+                (updateElement)="updateElement($event)"
+            ></app-element-fields>
+        </div>
+    </ng-container>
+    <ng-template #noOneInitialField>
+        <div class="create-view center-block-position no-postion-absolute">
+            <h3 class="center-block--title">
+                {{ 'collection.noOneInitialFieldsTitle' | translate }}
+            </h3>
+            <p class="center-block--description">
+                {{ 'collection.noOneInitialFieldsDescription' | translate }}
+            </p>
+            <div class="p-modal-controls p-modal-controls--center">
+                <button
+                    pButton
+                    [label]="'collection.createWithoutFields' | translate"
+                    class="p-button-outlined create-view--button"
+                    icon="pi pi-plus"
+                    (click)="close()"
+                ></button>
+
+                <button
+                    pButton
+                    [label]="'collection.addFields' | translate"
+                    class="create-view--button"
+                    icon="pi pi-plus"
+                    (click)="onSettingInitialFields()"
+                ></button>
+            </div>
+        </div>
+    </ng-template>
+    <div class="p-modal-controls p-modal-controls--right">
+        <p-button
+            *ngIf="initialFields.length > 0"
+            icon="pi pi-check"
+            [label]="'global.create' | translate"
+            styleClass="p-button-outline"
+            (click)="close()"
+        ></p-button>
+    </div>
+</div>

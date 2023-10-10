@@ -1,0 +1,225 @@
+<ng-container [ngSwitch]="config.modalMode">
+    <ng-container *ngSwitchCase="'collectionsRights'">
+        <p-table
+            [scrollable]="true"
+            [loading]="loadingConfig.isLoadingData"
+            [value]="rightsForm.value.collections"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>{{ 'collection.collectionName' | translate }}</th>
+                    <th>Create</th>
+                    <th>View</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                    <th>Export</th>
+                    <th>Import</th>
+                </tr>
+            </ng-template>
+            <ng-template let-collection pTemplate="body">
+                <tr>
+                    <td>
+                        {{ collection.label?.text }}
+                    </td>
+                    <td>
+                        <p-checkbox
+                            name="groupname"
+                            [binary]="true"
+                            [(ngModel)]="collection.rights.create"
+                            (onChange)="onRightsChanged()"
+                        ></p-checkbox>
+                    </td>
+                    <td>
+                        <p-selectButton
+                            styleClass="split-button"
+                            optionLabel="label"
+                            optionValue="value"
+                            [options]="rightSelection"
+                            [(ngModel)]="collection.rights.view"
+                            (onChange)="onRightsChanged()"
+                        ></p-selectButton>
+                    </td>
+                    <td>
+                        <p-selectButton
+                            styleClass="split-button"
+                            optionLabel="label"
+                            optionValue="value"
+                            [options]="rightSelection"
+                            [(ngModel)]="collection.rights.edit"
+                            (onChange)="onRightsChanged()"
+                        ></p-selectButton>
+                    </td>
+                    <td>
+                        <p-selectButton
+                            styleClass="split-button"
+                            optionLabel="label"
+                            optionValue="value"
+                            [options]="rightSelection"
+                            [(ngModel)]="collection.rights.delete"
+                            (onChange)="onRightsChanged()"
+                        ></p-selectButton>
+                    </td>
+                    <td>
+                        <p-checkbox
+                            name="groupname"
+                            [binary]="true"
+                            [(ngModel)]="collection.rights.export"
+                            (onChange)="onRightsChanged()"
+                        ></p-checkbox>
+                    </td>
+                    <td>
+                        <p-checkbox
+                            name="groupname"
+                            [binary]="true"
+                            [(ngModel)]="collection.rights.import"
+                            (onChange)="onRightsChanged()"
+                        ></p-checkbox>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'systemRights'">
+        <div class="rights-container">
+            <p-divider styleClass="main-color" align="left">
+                <span>System rights</span>
+            </p-divider>
+
+            <div class="field-checkbox">
+                <p-checkbox
+                    inputId="binary"
+                    [binary]="true"
+                    [(ngModel)]="rightsForm.value.system.access.entrance"
+                    (onChange)="onRightsChanged()"
+                ></p-checkbox>
+                <label for="binary">Access to CRM</label>
+            </div>
+
+            <div class="field-checkbox">
+                <p-checkbox
+                    inputId="binary"
+                    [binary]="true"
+                    [(ngModel)]="rightsForm.value.system.modules.settings.users.invite"
+                    (onChange)="onRightsChanged()"
+                ></p-checkbox>
+                <label for="binary">Invite members</label>
+            </div>
+
+            <p-divider styleClass="main-color" align="left">
+                <span>Modules rights</span>
+            </p-divider>
+
+            <p-table
+                dataKey="modulePath"
+                styleClass="modules-table"
+                [scrollable]="true"
+                [value]="modules"
+            >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template let-module pTemplate="body" let-expanded="expanded">
+                    <tr>
+                        <td *ngIf="module.expand">
+                            <button
+                                type="button"
+                                pButton
+                                pRipple
+                                [pRowToggler]="module"
+                                class="p-button-text p-button-rounded p-button-plain"
+                                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+                            ></button>
+                        </td>
+                        <td>
+                            {{ module.label }}
+                        </td>
+                        <td *ngFor="let field of module.fields">
+                            <div class="modules-rights__field">
+                                <p-divider layout="vertical"></p-divider>
+                                <p class="modules-rights__field--label">
+                                    {{ field.identifier | uppercase }}
+                                </p>
+
+                                <ng-container [ngSwitch]="field.fieldType">
+                                    <p-checkbox
+                                        *ngSwitchCase="'checkbox'"
+                                        name="groupname"
+                                        [binary]="true"
+                                        [(ngModel)]="
+                                            rightsForm.value.system.modules[module.modulePath][
+                                                field.identifier
+                                            ]
+                                        "
+                                    ></p-checkbox>
+                                    <p-selectButton
+                                        *ngSwitchCase="'selectButton'"
+                                        styleClass="split-button"
+                                        optionLabel="label"
+                                        optionValue="value"
+                                        [options]="field.options"
+                                        [(ngModel)]="
+                                            rightsForm.value.system.modules[module.modulePath][
+                                                field.identifier
+                                            ]
+                                        "
+                                    ></p-selectButton>
+                                </ng-container>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-module>
+                    <tr *ngFor="let data of module.expandData">
+                        <td>
+                            {{ data.label }}
+                        </td>
+
+                        <ng-container *ngFor="let field of data.fields">
+                            <td>
+                                <div class="modules-rights__field">
+                                    <p-divider layout="vertical"></p-divider>
+                                    <p class="modules-rights__field--label">
+                                        {{ field.identifier | uppercase }}
+                                    </p>
+
+                                    <ng-container [ngSwitch]="field.fieldType">
+                                        <p-checkbox
+                                            *ngSwitchCase="'checkbox'"
+                                            name="groupname"
+                                            [binary]="true"
+                                            [(ngModel)]="
+                                                rightsForm.value.system.modules[module.modulePath][
+                                                    data.modulePath
+                                                ][field.identifier]
+                                            "
+                                        ></p-checkbox>
+                                        <p-selectButton
+                                            *ngSwitchCase="'selectButton'"
+                                            styleClass="split-button"
+                                            optionLabel="label"
+                                            optionValue="value"
+                                            [options]="field.options"
+                                            [(ngModel)]="
+                                                rightsForm.value.system.modules[module.modulePath][
+                                                    data.modulePath
+                                                ][field.identifier]
+                                            "
+                                        ></p-selectButton>
+                                    </ng-container>
+                                </div>
+                            </td>
+                        </ng-container>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </ng-container>
+</ng-container>

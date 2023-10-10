@@ -1,0 +1,9 @@
+@import 'responsive.scss';
+
+.user-group {
+    max-width: 60vw;
+
+    @include lg-width {
+        max-width: 100%;
+    }
+}

@@ -1,0 +1,136 @@
+@import 'responsive.scss';
+
+.toolbar {
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    @include sm-width {
+        flex-wrap: wrap;
+    }
+}
+
+.toolbar-part {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+:host ::ng-deep {
+    .toolbar {
+        .p-buttonset,
+        .p-button {
+            height: 100%;
+        }
+    }
+
+    .overlaypanel-columns {
+        .p-overlaypanel-content {
+            padding: 0;
+        }
+    }
+
+}
+
+::ng-deep .settings__wrapper--fields-list {
+    .p-orderlist-list {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+}
+
+.filters__wrapper {
+    padding: 5px 15px;
+
+    .filters__container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+}
+
+.filters__filter-box--controls {
+    margin-left: 10px;
+    cursor: pointer;
+    transition: transform 0.5s;
+
+    &:hover {
+        transform: rotate(90deg);
+    }
+}
+
+.filters__filter-box {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.overlaypanel-columns--element {
+    font-size: 1.4rem;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+        background: var(--surface-section);
+    }
+}
+
+.overlaypanel-columns--icon {
+    margin-right: 10px;
+}
+
+.filters-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &.colapsed {
+        padding: 0 15px;
+    }
+}
+
+.filters-controls__part {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.fields-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.fields-box--label {
+    margin: 0;
+}
+
+.fields-box__controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.settings {
+    max-height: 90vh;
+    overflow-y: auto;
+
+    .switch-box {
+        margin: 10px 0;
+    }
+}
+
+.select-viewoption--content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    font-size: 1.1rem;
+    font-weight: 500;
+}

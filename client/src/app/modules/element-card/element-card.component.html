@@ -1,0 +1,115 @@
+<section class="card">
+    <app-header (saveElement)="saveElement()" (delete)="deleteElement()"></app-header>
+    <p-divider styleClass="card-divider"></p-divider>
+    <!-- <app-toolbar></app-toolbar> -->
+
+    <section *ngIf="element && !loadingConfig.isLoadingData" class="card-content">
+        <div class="card-content__element-fields">
+            <p-fieldset
+                styleClass="slim-fieldset"
+                [legend]="'elementCard.recordDetails' | translate"
+                [toggleable]="true"
+            >
+                <div class="element-fields">
+                    <div class="element-fields--box" *ngFor="let field of fields; index as i">
+                        <app-element-fields
+                            [config]="{element, field, collection, index: i, viewOption: 'card'}"
+                            (updateElement)="updateElement($event)"
+                        ></app-element-fields>
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+
+        <div class="card-content__container">
+            <div class="card-content__tabView--container">
+                <p-tabView styleClass="card-content__tabView">
+                    <!-- <p-tabPanel header="Activity">
+                        <div class="activity-timeline">
+                            <p-timeline [value]="activities">
+                                <ng-template pTemplate="content" let-event>
+                                    {{ event.status }}
+                                </ng-template>
+                            </p-timeline>
+                        </div>
+                    </p-tabPanel> -->
+                    <p-tabPanel [header]="'tasks.title' | translate">
+                        <app-tasks
+                            *ngIf="
+                                hasRight('tasks.view', {
+                                    mustNotEqualTo: 'forbidden'
+                                })
+                            "
+                            [config]="{
+                                isConnectedTasks: true,
+                                collection: collection,
+                                element: element
+                            }"
+                            (taskCreated)="serviceDataCreated('tasks', $event)"
+                        ></app-tasks>
+                    </p-tabPanel>
+                    <p-tabPanel [header]="'chat.titleSingle' | translate">
+                        <app-chats
+                            [config]="{
+                                isConnectedChat: true,
+                                collection: collection,
+                                element: element
+                            }"
+                            (chatCreated)="serviceDataCreated('chats', $event)"
+                        ></app-chats>
+                    </p-tabPanel>
+                    <p-tabPanel
+                        *ngIf="
+                            hasRight('deliveries.view', {
+                                mustNotEqualTo: 'forbidden'
+                            })
+                        "
+                        [header]="'delivery.titleSingle' | translate"
+                    >
+                        <app-deliveries
+                            [config]="{
+                                isConnectedDeliveries: true,
+                                collection: collection,
+                                element: element
+                            }"
+                            (deliveryCreated)="serviceDataCreated('deliveries', $event)"
+                        ></app-deliveries>
+                    </p-tabPanel>
+                    <p-tabPanel
+                        *ngIf="
+                            hasRight('files.view', {
+                                mustNotEqualTo: 'forbidden'
+                            })
+                        "
+                        [header]="'files.title' | translate"
+                    >
+                        <app-files
+                            [config]="{
+                                isConnectedFiles: true,
+                                collection: collection,
+                                element: element
+                            }"
+                            (fileCreated)="serviceDataCreated('files', $event)"
+                        ></app-files>
+                    </p-tabPanel>
+                    <p-tabPanel
+                        *ngIf="
+                            hasRight('calls.view', {
+                                mustNotEqualTo: 'forbidden'
+                            })
+                        "
+                        [header]="'calls.title' | translate"
+                    >
+                        <app-calls
+                            [config]="{
+                                isConnectedCalls: true,
+                                collection: collection,
+                                element: element
+                            }"
+                        ></app-calls>
+                    </p-tabPanel>
+                </p-tabView>
+            </div>
+        </div>
+    </section>
+</section>

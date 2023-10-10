@@ -1,0 +1,185 @@
+<section class="tasks" [ngClass]="{ 'tasks-connected': isConnectedTasks }">
+    <ng-container *ngIf="!loadingConfig.isLoadingData; else loading">
+        <app-header *ngIf="!isConnectedTasks" (onCreateTask)="onCreateTask()"
+            (changeViewType)="changeViewType($event)"></app-header>
+
+        <ng-container *ngIf="tasks.length > 0; else noOneTask">
+            <ng-container [ngSwitch]="selectedView">
+                <app-kanban-view *ngSwitchCase="'kanban'"></app-kanban-view>
+
+                <app-list-view *ngSwitchDefault [config]="{
+                    elements: tasks,
+                    isConnectedTasks: isConnectedTasks
+                }" (onCreateTask)="onCreateTask($event)" (onUpdateTask)="onUpdateTask($event)"
+                    (onDeleteTask)="onDeleteTask($event)" (openCard)="openCard($event)"
+                    (updateTask)="updateTask($event)"></app-list-view>
+
+            </ng-container>
+        </ng-container>
+        <ng-template #noOneTask>
+            <div class="create-view center-block-position">
+                <h3 class="center-block--title">No one task you have</h3>
+                <p class="center-block--description">
+                    None of the task in this collection. Create new?
+                </p>
+                <button pButton label="Create" class="p-button-outlined" icon="pi pi-plus"
+                    (click)="onCreateTask()"></button>
+            </div>
+        </ng-template>
+    </ng-container>
+    <ng-template #loading>
+        <div class="center-block-position">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+    </ng-template>
+</section>
+
+<p-sidebar *ngIf="selectedTask" appendTo="body" position="right" styleClass="task-card" (onHide)="hideCard()"
+    [(visible)]="isOpenedCard">
+    <ng-template pTemplate="header">
+        <p-splitButton [label]="'global.save' | translate" icon="pi pi-check" [model]="taskCardModel"
+            (onClick)="hideCard()"></p-splitButton>
+    </ng-template>
+    <ng-template pTemplate="content">
+        <div class="task-card__header">
+            <div contenteditable class="p-contenteditable task-card__title"
+                [attr.placeholder]="'fields.title' | translate" [innerText]="selectedTask.title || ''"
+                (blur)="onInput($event, 'title')"></div>
+            <div contenteditable class="p-contenteditable task-card__description"
+                [attr.placeholder]="'fields.description' | translate" [innerText]="selectedTask.description || ''"
+                (blur)="onInput($event, 'description')"></div>
+        </div>
+
+        <div class="task-card__content">
+            <div class="task-card__wrapper">
+                <div class="task-card__part">
+                    <p-fieldset *ngFor="let checklist of selectedTask.checklists; index as i" [legend]="checklist.label"
+                        styleClass="task-card__checkboxes">
+                        <div *ngFor="let checkbox of checklist.checkboxes" class="field-checkbox">
+                            <p-checkbox inputId="checkbox" [binary]="true"
+                                [(ngModel)]="checkbox.complete.stage"></p-checkbox>
+                            <label for="checkbox" [ngClass]="{'checkbox--completed': checkbox.complete.stage}">{{
+                                checkbox.label }}</label>
+                        </div>
+
+                        <button pButton class="p-button-outlined task-card--button" icon="pi pi-plus"
+                            [label]="'tasks.addCheckbox' | translate"
+                            (click)="opAddCheckbox.toggle($event); selectedChecklistIndex = i"></button>
+                    </p-fieldset>
+
+                    <button pButton class="p-button-outlined task-card--button" icon="pi pi-plus"
+                        [label]="'tasks.addChecklist' | translate" (click)="opAddChecklist.toggle($event)"></button>
+
+                    <p-tabView styleClass="task-tabs">
+                        <p-tabPanel [header]="'chat.title' | translate">
+                            <div class="task-card__chat">
+                                <app-chats [config]="{
+                                        isConnectedChat: true,
+                                        element: selectedTask
+                                    }"></app-chats>
+                            </div>
+                        </p-tabPanel>
+                        <p-tabPanel [header]="'files.title' | translate">
+                            <app-files [config]="{
+                                    isConnectedFiles: true,
+                                    element: selectedTask
+                                }" (fileCreated)="serviceDataCreated('files', $event)"></app-files>
+                        </p-tabPanel>
+                    </p-tabView>
+                </div>
+
+                <p-divider layout="vertical" styleClass="task-card__wrapper--divider"></p-divider>
+
+                <div class="task-card__part task-card__info">
+                    <div *ngIf="selectedTask.stage.startAt" class="task-card__info--box info">
+                        <p> <i class="pi pi-exclamation-circle"></i> Start do at: {{ selectedTask.stage.startAt |
+                            date:'dd.MM.yyyy HH:mm' }}</p>
+                    </div>
+
+                    <div *ngIf="isTaskOverdue(selectedTask.endAt)" class="task-card__info--box danger">
+                        <p> <i class="pi pi-exclamation-triangle"></i> Task is overdue</p>
+                    </div>
+
+                    <form [formGroup]="taskForm">
+                        <div class="p-field">
+                            <span class="p-float-label">
+                                <p-multiSelect optionLabel="data.name.full" [dataKey]="'data._id'" [appendTo]="'body'"
+                                    [options]="taskData.users" [ngModelOptions]="{ standalone: true }"
+                                    [(ngModel)]="selectedTask.responsibles"></p-multiSelect>
+                                <label>{{ 'fields.responsibles' | translate }}</label>
+                            </span>
+                        </div>
+
+                        <div class="p-field">
+                            <span class="p-float-label">
+                                <p-multiSelect optionLabel="data.name.full" [dataKey]="'data._id'" [appendTo]="'body'"
+                                    [options]="taskData.users" [ngModelOptions]="{ standalone: true }"
+                                    [(ngModel)]="selectedTask.executors"></p-multiSelect>
+                                <label>{{ 'fields.executors' | translate }}</label>
+                            </span>
+                        </div>
+
+                        <div class="p-field p-fluid">
+                            <span class="p-float-label">
+                                <p-calendar formControlName="endAt"></p-calendar>
+                                <label for="inputtext">{{ 'fields.endAt' | translate }}</label>
+                            </span>
+                        </div>
+
+                        <div class="p-field p-fluid">
+                            <span class="p-float-label">
+                                <p-calendar formControlName="createdAt"></p-calendar>
+                                <label for="inputtext">{{ 'fields.createdAt' | translate }}</label>
+                            </span>
+                        </div>
+
+                        <div class="p-field p-fluid">
+                            <span class="p-float-label">
+                                <p-dropdown optionLabel="name.full" [appendTo]="'body'" [options]="userService.users"
+                                    [disabled]="true" [ngModel]="userService.getUserById(selectedTask.createdBy)"
+                                    [ngModelOptions]="{ standalone: true }"></p-dropdown>
+                                <label for="inputtext">{{ 'fields.createdBy' | translate }}</label>
+                            </span>
+                        </div>
+
+                        <p-divider></p-divider>
+
+                        <div class="p-fluid">
+                            <div class="p-float-label">
+                                <p-selectButton optionLabel="label" optionValue="value"
+                                    [options]="selectedTask.stage.progress !== 'start' && selectedTask.stage.progress !== 'notCompleted' ? runningTaskOptions : taskOptions"
+                                    [ngModelOptions]="{ standalone: true }" [(ngModel)]="selectedTask.stage.progress"
+                                    (ngModelChange)="onSelectTaskProgress($event)"></p-selectButton>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-sidebar>
+
+<p-overlayPanel #opAddCheckbox>
+    <div class="p-field">
+        <input #checkbox pInputText type="text" [placeholder]="'tasks.enterCheckboxLabel' | translate" />
+    </div>
+
+    <div class="p-modal-controls p-modal-controls--right">
+        <button pButton [label]="'global.create' | translate"
+            (click)="addCheckbox($event, checkbox.value); checkbox.value = ''"></button>
+    </div>
+</p-overlayPanel>
+
+<p-overlayPanel #opAddChecklist>
+    <div class="p-field">
+        <input #checklist pInputText type="text" [placeholder]="'tasks.enterChecklistLabel' | translate" />
+    </div>
+
+    <div class="p-modal-controls p-modal-controls--right">
+        <button pButton [label]="'global.create' | translate"
+            (click)="addChecklist($event, checklist.value); checklist.value = ''"></button>
+    </div>
+</p-overlayPanel>
+
+
+<p-confirmDialog [baseZIndex]="10000" rejectButtonStyleClass="p-button-text"></p-confirmDialog>

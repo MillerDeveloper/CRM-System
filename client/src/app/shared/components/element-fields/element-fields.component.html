@@ -1,0 +1,352 @@
+<div
+    class="element-fields__container"
+    *ngIf="config"
+    [ngClass]="{
+        cardViewOption: config.viewOption === 'card',
+        'default-style': config.defaultStyle
+    }"
+    (dblclick)="$event.stopPropagation()"
+>
+    <div class="element-fields__wrapper" [ngSwitch]="config.field._id" [formGroup]="fieldForm">
+        <app-stage
+            *ngSwitchCase="'stage'"
+            [config]="childConfig"
+            (setValue)="setCustomFieldValue($event)"
+        ></app-stage>
+        <ng-container *ngSwitchCase="'responsibles'">
+            <span class="p-field no-margin">
+                <p-multiSelect
+                    appendTo="body"
+                    optionLabel="name.full"
+                    formControlName="fieldValue"
+                    display="'chip'"
+                    [options]="userService.users"
+                >
+                    <ng-template let-value pTemplate="selectedItems">
+                        <div class="chip__wrapper">
+                            <div *ngFor="let option of fieldForm.value.fieldValue">
+                                <p-chip
+                                    *ngIf="option"
+                                    styleClass="custom-chip"
+                                    [label]="option.name?.full"
+                                ></p-chip>
+                            </div>
+                        </div>
+                        <div
+                            *ngIf="
+                                !fieldForm.value.fieldValue ??
+                                fieldForm.value.fieldValue?.length === 0
+                            "
+                            class="multiselect-placeholder"
+                        >
+                            Responsibles
+                        </div>
+                    </ng-template>
+                    <ng-template let-option pTemplate="item">
+                        {{ option.name.full }}
+                    </ng-template>
+                </p-multiSelect>
+            </span>
+        </ng-container>
+        <p *ngSwitchCase="'totalPrice'" class="primary-field-text">
+            {{ getTotalPrice() }} {{ getCurrency() }}
+        </p>
+        <app-discount
+            *ngSwitchCase="'discount'"
+            [config]="childConfig"
+            (updateElement)="updateElement.emit($event)"
+        ></app-discount>
+        <div *ngSwitchCase="'gender'" class="p-field field-inplace--field-box">
+            <p-dropdown
+                optionLabel="label"
+                optionValue="value"
+                appendTo="body"
+                formControlName="fieldValue"
+                [placeholder]="config.field.label"
+                [editable]="true"
+                [options]="genders"
+            ></p-dropdown>
+        </div>
+        <app-phone
+            *ngSwitchCase="'phone'"
+            [config]="childConfig"
+            (setValue)="setValue($event)"
+        ></app-phone>
+        <div *ngSwitchCase="'email'" class="p-fluid">
+            <p-chips
+                formControlName="fieldValue"
+                styleClass="custom-chip-field"
+                [placeholder]="config.field.label"
+                [addOnBlur]="true"
+                [max]="6"
+            ></p-chips>
+        </div>
+
+        <ng-container *ngSwitchDefault [ngSwitch]="config.field.fieldType">
+            <app-connections
+                *ngSwitchCase="'collectionElement'"
+                [config]="childConfig"
+                (updateElement)="updateElement.emit($event)"
+            ></app-connections>
+
+            <div *ngSwitchCase="'checkbox'" class="field-inplace--label">
+                <div class="field-checkbox">
+                    <p-checkbox
+                        inputId="binary"
+                        [binary]="true"
+                        [ngModel]="!!getFieldValue({ getLabel: false })"
+                        [ngModelOptions]="{ standalone: true }"
+                        (onChange)="setValue($event.checked)"
+                    ></p-checkbox>
+
+                    <label for="binary">
+                        {{
+                            'global.' + (!!getFieldValue({ getLabel: false }) ? 'yes' : 'no')
+                                | translate
+                        }}
+                    </label>
+                </div>
+            </div>
+
+            <div *ngSwitchCase="'rating'" class="field-inplace--label field-rating">
+                <p-rating
+                    formControlName="fieldValue"
+                    [stars]="5"
+                    [cancel]="false"
+                    (onRate)="setValue($event.value)"
+                ></p-rating>
+            </div>
+
+            <div *ngSwitchCase="'slider'" class="field-inplace--label field-slider">
+                <p class="field-slider--title">{{ fieldForm.value.fieldValue || 0 }}%</p>
+                <p-slider formControlName="fieldValue" [max]="100" [min]="0" [step]="5"></p-slider>
+            </div>
+
+            <div *ngSwitchCase="'text'" class="p-input-box">
+                <div
+                    #fieldInput
+                    contenteditable
+                    class="p-field p-input-text no-margin p-contenteditable field-inplace--field-box"
+                    [attr.placeholder]="config.field.label"
+                    [innerText]="fieldForm.value.fieldValue?.trim()"
+                    (input)="onInput(fieldInput)"
+                ></div>
+            </div>
+
+            <div *ngSwitchCase="'textarea'" class="p-input-box">
+                <div
+                    #fieldInput
+                    contenteditable
+                    class="p-field p-input-text no-margin p-contenteditable field-inplace--field-box"
+                    [attr.placeholder]="config.field.label"
+                    [innerText]="fieldForm.value.fieldValue?.trim()"
+                    (input)="onInput(fieldInput)"
+                ></div>
+            </div>
+
+            <div *ngSwitchCase="'number'" class="p-field p-fluid field-inplace--field-box">
+                <div class="p-inputgroup">
+                    <p-inputNumber
+                        formControlName="fieldValue"
+                        [currency]="getCurrency()"
+                        [prefix]="getGroupedExtraData('prefix')"
+                        [suffix]="getGroupedExtraData('suffix')"
+                        [mode]="config.field.settings?.mode || 'decimal'"
+                        [placeholder]="config.field.label"
+                    >
+                    </p-inputNumber>
+                    <!-- <button
+                        *ngIf="getGroupedExtraData('suffix')"
+                        pButton
+                        pRipple
+                        class="p-button-text"
+                        icon="pi pi-ellipsis-v"
+                        (click)="fieldExtraData.toggle($event)"
+                    ></button> -->
+                </div>
+            </div>
+
+            <div *ngSwitchCase="'select'" class="p-field field-inplace--field-box">
+                <p-dropdown
+                    appendTo="body"
+                    formControlName="fieldValue"
+                    [options]="config.field.options"
+                    [filter]="true"
+                    [showClear]="true"
+                    [filterBy]="config.field.optionLabel || 'label'"
+                >
+                    <ng-template let-value pTemplate="selectedItems">
+                        <div *ngFor="let option of fieldForm.value.fieldValue">
+                            <div>
+                                {{
+                                    config.field.optionLabel
+                                        ? option[config.field.optionLabel]
+                                        : option.label
+                                }}
+                            </div>
+                        </div>
+                        <div
+                            *ngIf="
+                                !fieldForm.value.fieldValue ??
+                                fieldForm.value.fieldValue?.length === 0
+                            "
+                            class="multiselect-placeholder"
+                        >
+                            {{ config.field.label }}
+                        </div>
+                    </ng-template>
+                    <ng-template let-option pTemplate="item">
+                        {{
+                            config.field.optionLabel
+                                ? option[config.field.optionLabel]
+                                : option.label
+                        }}
+                    </ng-template>
+                </p-dropdown>
+            </div>
+
+            <div *ngSwitchCase="'multiselect'" class="p-field field-inplace--field-box">
+                <p-multiSelect
+                    appendTo="body"
+                    formControlName="fieldValue"
+                    [options]="config.field.options"
+                    [defaultLabel]="config.field.label"
+                    [display]="config.field.displayType"
+                    [showClear]="true"
+                >
+                    <ng-template let-value pTemplate="selectedItems">
+                        <div *ngFor="let option of fieldForm.value.fieldValue">
+                            <div>{{ getLabel(option) }}</div>
+                        </div>
+                        <div
+                            *ngIf="
+                                !fieldForm.value.fieldValue ??
+                                fieldForm.value.fieldValue?.length === 0
+                            "
+                            class="multiselect-placeholder"
+                        >
+                            {{ config.field.label }}
+                        </div>
+                    </ng-template>
+                    <ng-template let-option pTemplate="item">
+                        {{ option.label }}
+                    </ng-template>
+                </p-multiSelect>
+            </div>
+
+            <div
+                *ngSwitchCase="config.field.fieldType === 'date' ? 'date' : 'datetime'"
+                class="p-fluid field-inplace--field-box"
+            >
+                <p-calendar
+                    *ngIf="!config.field.disabled; else disabledInput"
+                    #calendar
+                    appendTo="body"
+                    dataType="date"
+                    dateFormat="dd.mm.yy"
+                    formControlName="fieldValue"
+                    hourFormat="24"
+                    [showOnFocus]="true"
+                    [hideOnDateTimeSelect]="false"
+                    [showTime]="config.field.fieldType === 'datetime'"
+                    [placeholder]="config.field.label"
+                    [readonlyInput]="true"
+                    [showClear]="true"
+                ></p-calendar>
+                <ng-template #disabledInput>
+                    <input
+                        class="field-inplace--field"
+                        pInputText
+                        [disabled]="true"
+                        [ngModel]="fieldForm.value.fieldValue | date : 'dd.MM.yyyy HH:mm'"
+                        [ngModelOptions]="{ standalone: true }"
+                        [placeholder]="config.field.label"
+                    />
+                </ng-template>
+            </div>
+
+            <div *ngSwitchDefault class="p-input-box">
+                <div
+                    #fieldInput
+                    contenteditable
+                    class="p-field p-input-text no-margin p-contenteditable field-inplace--field-box"
+                    [attr.placeholder]="config.field.label"
+                    [innerText]="fieldForm.value.fieldValue?.trim()"
+                    (input)="onInput(fieldInput)"
+                ></div>
+            </div>
+        </ng-container>
+    </div>
+</div>
+
+<!-- <p-overlayPanel #fieldExtraData>
+    <ng-template pTemplate>
+        <div class="field-extra">
+            <p-divider>
+                <b>Prefix</b>
+            </p-divider>
+
+            <div class="field-extra__box">
+                <p-dropdown
+                    placeholder="Select prefix"
+                    [showClear]="true"
+                    [options]="fieldExtraDataOptions"
+                    [ngModel]="fieldForm.value.prefix.identifier"
+                    (onChange)="setFieldExtraData($event, 'prefix')"
+                ></p-dropdown>
+
+                <p-divider layout="vertical">
+                    <b>OR</b>
+                </p-divider>
+
+                <div class="p-field no-margin">
+                    <input
+                        pInputText
+                        type="text"
+                        placeholder="Enter prefix"
+                        (input)="fieldForm.value.prefix.identifier = 'custom'"
+                        [(ngModel)]="fieldForm.value.prefix.value"
+                    />
+                </div>
+            </div>
+
+            <p-divider>
+                <b>Suffix</b>
+            </p-divider>
+
+            <div class="field-extra__box">
+                <p-dropdown
+                    placeholder="Select suffix"
+                    [showClear]="true"
+                    [options]="fieldExtraDataOptions"
+                    [ngModel]="fieldForm.value.suffix.identifier"
+                    (onChange)="setFieldExtraData($event, 'suffix')"
+                ></p-dropdown>
+
+                <p-divider layout="vertical">
+                    <b>OR</b>
+                </p-divider>
+
+                <div class="p-field no-margin">
+                    <input
+                        pInputText
+                        type="text"
+                        placeholder="Enter suffix"
+                        (input)="fieldForm.value.suffix.identifier = 'custom'"
+                        [(ngModel)]="fieldForm.value.suffix.value"
+                    />
+                </div>
+            </div>
+        </div>
+        <div class="p-modal-controls p-modal-controls--right">
+            <button
+                pButton
+                pRipple
+                class="p-button-outlined"
+                icon="pi pi-save"
+                [label]="'global.save' | translate"
+                (click)="setExtraData(); fieldExtraData.toggle($event)"
+            ></button>
+        </div>
+    </ng-template>
+</p-overlayPanel> -->

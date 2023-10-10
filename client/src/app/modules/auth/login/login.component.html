@@ -1,0 +1,99 @@
+<section class="register">
+    <div class="auth-container">
+        <div class="auth-wrapper">
+            <ng-container *ngIf="!state.isSelectCompany; else selectCompanyStage">
+                <form class="auth-fields" [formGroup]="authForm">
+                    <h4 class="auth-wrapper__title">
+                        {{ 'login.greetingTitle' | translate }}
+                    </h4>
+                    <p class="auth-wrapper__description secondary-text">
+                        {{ 'login.greetingDescription' | translate }}
+                        <span class="auth-wrapper__switch-auth" [routerLink]="['/register']">{{
+                            'login.orRegister' | translate
+                        }}</span>
+                    </p>
+
+                    <div class="p-field">
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-at"></i>
+                            <input
+                                id="email"
+                                type="email"
+                                aria-describedby="email"
+                                pInputText
+                                formControlName="email"
+                                [placeholder]="'auth.enterEmail' | translate"
+                            />
+                        </span>
+                        <small
+                            class="p-error block"
+                            *ngIf="
+                                authForm.controls['email'].touched &&
+                                authForm.controls['email'].invalid
+                            "
+                        >
+                            {{ 'auth.enterValidEmail' | translate }}
+                        </small>
+                    </div>
+
+                    <div class="p-field">
+                        <p-password
+                            formControlName="password"
+                            [toggleMask]="true"
+                            [placeholder]="'auth.enterPassword' | translate"
+                            [feedback]="false"
+                        ></p-password>
+                    </div>
+
+                    <div class="p-field">
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-send"></i>
+                            <input
+                                id="workspaceName"
+                                type="text"
+                                pInputText
+                                formControlName="workspaceName"
+                                [placeholder]="'auth.enterWorkspaceName' | translate"
+                            />
+                        </span>
+                        <small
+                            class="p-error block"
+                            *ngIf="
+                                authForm.controls['workspaceName'].touched &&
+                                authForm.controls['workspaceName'].invalid
+                            "
+                        >
+                            {{ 'auth.enterValidWorkspaceName' | translate }}
+                        </small>
+                    </div>
+
+                    <p-button
+                        type="submit"
+                        styleClass="auth-submit p-full-width"
+                        [label]="'global.continue' | translate"
+                        [disabled]="authForm.invalid"
+                        (onClick)="login()"
+                    ></p-button>
+                </form>
+            </ng-container>
+            <ng-template #selectCompanyStage>
+                <div class="select-company auth-fields">
+                    <h4 class="auth-wrapper__title">{{ 'login.selectCompanyTitle' | translate }}</h4>
+                    <p class="auth-wrapper__description secondary-text">
+                        {{ 'login.selectCompanyDescription' | translate }}
+                    </p>
+
+                    <div class="select-company__wrapper">
+                        <div
+                            *ngFor="let company of companies"
+                            class="select-company__box"
+                            (click)="selectCompany(company)"
+                        >
+                            {{ company.element.name }}
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</section>

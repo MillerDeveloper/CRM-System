@@ -1,0 +1,55 @@
+<div class="sites content-container content-container--large">
+    <div class="settings-header">
+        <h3 class="settings-header--title paramount-text">{{ 'sites.title' | translate }}</h3>
+        <p class="settings-header--description secondary-text">
+            {{ 'sites.description' | translate }}
+        </p>
+    </div>
+
+    <div *ngIf="currentCompany" class="sites__wrapper">
+        <div *ngFor="let site of currentCompany.sites; index as siteIndex" class="site-box">
+            <div class="site-box__container">
+                <div class="site-box__wrapper">
+                    <div class="site-box__part">
+                        <div>
+                            <p class="site-box--name paramount-text">{{ site.url }}</p>
+                            <p class="site-box--description secondary-text">
+                                {{ site.description }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="site-box__part">
+                        <button pButton class="p-button-outlined" icon="pi pi-cog" (click)="settingSite(siteIndex)"></button>
+                        <button
+                            pButton
+                            class="p-button-outlined"
+                            icon="pi pi-times"
+                            (click)="removeSite(siteIndex)"
+                        ></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button
+            pButton
+            class="p-button-outlined add-site"
+            icon="pi pi-plus"
+            (click)="onAddSite()"
+        ></button>
+    </div>
+
+    <p-divider></p-divider>
+
+    <div class="settings-header">
+        <h3 class="settings-header--title paramount-text">Get records form site</h3>
+        <p class="settings-header--description secondary-text">
+            {{ 'sites.sendPost' | translate }}
+            (https://new.business-control-system.com/api/collection-elements/:collectionId/create?workspaceName={{
+                currentUser?.workspaceName
+            }})
+            {{ 'sites.andAllData' | translate }}
+        </p>
+    </div>
+</div>

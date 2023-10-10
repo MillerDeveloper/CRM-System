@@ -1,0 +1,28 @@
+<!-- <div class="loader" [ngClass]="{ 'finish-animate': loadingConfig.isLoadingData === false }">
+    <div
+        [ngClass]="{
+            'finish-animate': loadingConfig.isLoadingData === false,
+            'no-internet': !isOnline
+        }"
+        class="loader__wrapper"
+    >
+        <ng-container *ngIf="isOnline; else noInternet">
+            <h1 class="loader__wrapper--title">BCS</h1>
+            <p-progressBar mode="indeterminate" [style]="{ height: '6px' }"></p-progressBar>
+        </ng-container>
+        <ng-template #noInternet>
+            <h1 class="loader__wrapper--title">Connection lost</h1>
+            <p class="loader__wrapper--description">
+                Check you internet connection and reload this page...
+            </p>
+        </ng-template>
+    </div>
+</div>
+
+<div [ngStyle]="{ display: loadingConfig.isLoadingData ? 'none' : 'block' }">
+    <router-outlet></router-outlet>
+</div> -->
+
+<app-call></app-call>
+<p-toast></p-toast>
+<router-outlet></router-outlet>

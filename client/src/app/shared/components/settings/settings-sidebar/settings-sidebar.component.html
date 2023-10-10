@@ -1,0 +1,98 @@
+<div class="sidebar">
+    <div class="sidebar__part">
+        <div [routerLink]="'/'" class="sidebar__company-info">
+            <div class="sidebar__company-info--wrapper sidebar-container">
+                <div class="sidebar__company-info--avatar">
+                    <i class="pi pi-chevron-left sidebar__company-info--back"></i>
+                    <p class="sidebar__company-info--title">{{ 'settings.title' | translate }}</p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <p-divider styleClass="no-margin" align="left">
+                <span>{{ 'global.account' | translate }}</span>
+            </p-divider>
+
+            <ul class="sidebar-menu--list">
+                <li [routerLink]="['profile']" class="sidebar-menu--element">
+                    <i class="pi pi-bolt p-text-secondary sidebar-menu--icon"></i>
+                    <span class="sidebar-menu--element-text">{{
+                        'global.profile' | translate
+                    }}</span>
+                </li>
+            </ul>
+
+            <p-divider align="left">
+                <span>{{ 'global.company' | translate }}</span>
+            </p-divider>
+            <ul *ngIf="currentUser" class="sidebar-menu--list">
+                <li
+                    *ngIf="
+                        userService.hasSystemRight({
+                            rightPath: 'settings.users.view',
+                            rights: currentUser.rights.system?.modules,
+                            mustNotEqualTo: 'forbidden'
+                        })
+                    "
+                    class="sidebar-menu--element"
+                    [routerLink]="['users']"
+                >
+                    <i class="pi pi-users p-text-secondary sidebar-menu--icon"></i>
+                    <span class="sidebar-menu--element-text">{{
+                        'settings.members' | translate
+                    }}</span>
+                </li>
+                <li
+                    *ngIf="
+                        userService.hasSystemRight({
+                            rightPath: 'settings.integrations.edit',
+                            rights: currentUser.rights.system?.modules,
+                            mustNotEqualTo: 'forbidden'
+                        })
+                    "
+                    [routerLink]="['integrations']"
+                    class="sidebar-menu--element"
+                >
+                    <i class="pi pi-bolt p-text-secondary sidebar-menu--icon"></i>
+                    <span class="sidebar-menu--element-text">{{
+                        'settings.integrations' | translate
+                    }}</span>
+                </li>
+                <li
+                    *ngIf="
+                        userService.hasSystemRight({
+                            rightPath: 'settings.sites.edit',
+                            rights: currentUser.rights.system?.modules,
+                            mustNotEqualTo: 'forbidden'
+                        })
+                    "
+                    [routerLink]="['sites']"
+                    class="sidebar-menu--element"
+                >
+                    <i class="pi pi-bolt p-text-secondary sidebar-menu--icon"></i>
+                    <span class="sidebar-menu--element-text">{{
+                        'settings.sites' | translate
+                    }}</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="sidebar-part">
+        <!-- <ul class="sidebar-menu--list">
+            <li [routerLink]="['activity']" class="sidebar-menu--element">
+                <i class="pi pi-money-bill p-text-secondary sidebar-menu--icon"></i>
+                <span class="sidebar-menu--element-text">Tariff plans</span>
+            </li>
+            <li class="sidebar-menu--element" (click)="onInviteUsers()">
+                <i class="pi pi-verified p-text-secondary sidebar-menu--icon"></i>
+                <span class="sidebar-menu--element-text">Invite member</span>
+            </li>
+            <li [routerLink]="['activity']" class="sidebar-menu--element">
+                <i class="pi pi-question-circle p-text-secondary sidebar-menu--icon"></i>
+                <span class="sidebar-menu--element-text">Support</span>
+            </li>
+        </ul> -->
+    </div>
+</div>

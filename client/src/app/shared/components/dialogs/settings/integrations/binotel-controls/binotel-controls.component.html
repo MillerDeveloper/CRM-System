@@ -1,0 +1,56 @@
+<div class="p-modal">
+    <form [formGroup]="binotelForm">
+        <div class="p-field">
+            <input
+                type="text"
+                pInputText
+                required
+                [placeholder]="'Binotel key'"
+                formControlName="key"
+            />
+        </div>
+
+        <div class="p-field">
+            <input
+                type="password"
+                pInputText
+                required
+                [placeholder]="
+                    'Binotel secret' + (config.data?.info ? '(For protection we hide it)' : '')
+                "
+                formControlName="secret"
+            />
+        </div>
+
+        <div class="p-field">
+            <input
+                type="text"
+                pInputText
+                required
+                [placeholder]="'Binotel company ID'"
+                formControlName="companyId"
+            />
+        </div>
+
+        <div class="p-modal-controls">
+            <div class="p-modal-controls__part">
+                <div class="p-field">
+                    <p-selectButton
+                        optionLabel="name"
+                        optionValue="value"
+                        formControlName="callNumberType"
+                        [options]="callNumberTypes"
+                    ></p-selectButton>
+                </div>
+            </div>
+            <div class="p-modal-controls__part">
+                <p-button
+                    icon="pi pi-save"
+                    label="Save"
+                    [disabled]="binotelForm.invalid"
+                    (click)="close()"
+                ></p-button>
+            </div>
+        </div>
+    </form>
+</div>

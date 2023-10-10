@@ -1,0 +1,48 @@
+@import 'responsive.scss';
+
+::ng-deep {
+    .content-splitter {
+        .content-split-panel:first-child {
+            min-width: 180px;
+            max-width: 300px;
+        }
+
+        &.sidebar-closed {
+            .content-split-panel:first-child {
+                min-width: 60px;
+                max-width: 70px;
+            }
+        }
+    }
+
+    .p-splitter-panel {
+        overflow: hidden;
+    }
+}
+
+.main {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+}
+
+.sidebar {
+    width: 100%;
+}
+
+.content {
+    width: 100%;
+    background: var(--surface-ground);
+    padding-left: 20px;
+    padding-right: 20px;
+    position: relative;
+    overflow-y: scroll;
+    max-height: 100vh;
+
+    @include sm-width {
+        padding-left: 10px;
+        padding-right: 5px;
+    }
+}

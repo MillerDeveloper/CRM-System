@@ -1,0 +1,175 @@
+.kanban {
+    overflow: scroll;
+    position: relative;
+    max-width: 100%;
+}
+
+.kanban__container {
+    position: relative;
+}
+
+.kanban__wrapper {
+    display: flex;
+    gap: 30px;
+}
+
+.stage__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 5px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--surface-ground);
+    min-height: 40px;
+}
+
+.kanban__stage {
+    min-width: 250px;
+}
+
+.stage__controls {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.stage__info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stage__header--color {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 1px solid var(--surface-border);
+    appearance: none;
+}
+
+.stage__header--label {
+    letter-spacing: -0.02em;
+    line-height: 20px;
+    font-size: 1.4rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+    margin: 0;
+}
+
+::ng-deep {
+    .stage__body--add {
+        padding: 7px 9px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
+    .stage-card__content--name {
+        width: 100%;
+
+        .p-inplace-display {
+            padding: 10px 8px;
+            font-size: 1.2rem;
+            display: block;
+            width: 100%;
+            border-radius: 4px;
+        }
+    }
+
+    .add-stage__color-picker {
+        width: 30px;
+    }
+}
+
+.stage-card__header-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.stage__body {
+    margin-top: 20px;
+}
+
+.stage-card {
+    background: var(--surface-section);
+    border: 2px solid var(--surface-border);
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+    min-width: 250px;
+}
+
+.stage-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.stage-card__content--icon {
+    font-size: 1rem;
+}
+
+.stage-card__label {
+    letter-spacing: -0.02em;
+    line-height: 20px;
+    font-size: 1.2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+    margin: 0;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.stage-card__content--field {
+    width: 100%;
+}
+
+.stage-card__content-element {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.stage-card__content-list {
+    p-inplace {
+        width: 100%;
+    }
+}
+
+.add-stage {
+    .stage__info {
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+}
+
+.board-paginator {
+    position: relative;
+    max-width: 100%;
+}
+
+:host ::ng-deep {
+    .board-paginator--element {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -45px;
+    }
+
+    .phones {
+        .p-chip {
+            border: 1px solid white;
+            margin: 2px 5px;
+        }
+    }
+}

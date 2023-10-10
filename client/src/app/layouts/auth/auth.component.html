@@ -1,0 +1,17 @@
+<div
+    class="auth"
+    [ngClass]="{
+        'winter-theme': themeSeason === 'winter',
+        'spring-theme': themeSeason === 'spring'
+    }"
+>
+    <div class="auth-content">
+        <router-outlet></router-outlet>
+    </div>
+
+    <ng-container *ngIf="themeSeason === 'spring'">
+        <div class="leaves">
+            <i *ngFor="let i of [].constructor(20)"></i>
+        </div>
+    </ng-container>
+</div>

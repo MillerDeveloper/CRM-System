@@ -1,0 +1,57 @@
+<div class="p-fluid phones" (click)="toggleOp($event)">
+    <ng-container *ngIf="phones.length > 0; else noOnePhone">
+        <ng-container *ngFor="let value of phones; index as i">
+            <p-chip
+                *ngIf="value; else noOnePhone"
+                [label]="value"
+                [removable]="true"
+                (onRemove)="removePhone($event, i)"
+            ></p-chip>
+        </ng-container>
+    </ng-container>
+    <ng-template #noOnePhone>
+        <p-chip [label]="'global.noPhone' | translate"></p-chip>
+    </ng-template>
+</div>
+
+<p-overlayPanel *ngIf="config?.fieldForm" #op [dismissable]="true" [showCloseIcon]="true" [appendTo]="'body'">
+    <div>
+        <ng-container *ngIf="phones.length > 0; else noOnePhone">
+            <div *ngFor="let value of phones; index as i" class="p-field">
+                <div class="p-field__box">
+                    <input
+                        pInputText
+                        pAutoFocus
+                        [disabled]="config.fieldForm.disabled"
+                        [autofocus]="i === phones.length - 1"
+                        [placeholder]="'Phone number'"
+                        [ngModel]="value"
+                        (ngModelChange)="onPhoneChange($event, i)"
+                    />
+
+                    <button
+                        pButton
+                        class="p-button-text"
+                        icon="pi pi-trash"
+                        [disabled]="config.fieldForm.disabled"
+                        (click)="removePhone($event, i)"
+                    ></button>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #noOnePhone>
+            <p>No one phone</p>
+        </ng-template>
+    </div>
+
+    <div class="p-modal-controls p-modal-controls--right">
+        <button
+            pButton
+            class="p-button-outlined"
+            icon="pi pi-plus"
+            [disabled]="config.fieldForm.disabled"
+            [label]="'Add phone'"
+            (click)="addPhone()"
+        ></button>
+    </div>
+</p-overlayPanel>

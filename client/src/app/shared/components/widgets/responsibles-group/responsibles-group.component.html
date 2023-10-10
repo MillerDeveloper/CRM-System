@@ -1,0 +1,22 @@
+<p-avatarGroup>
+    <ng-container *ngFor="let responsible of config.responsibles; index as i">
+        <p-avatar
+            *ngIf="i < 3 && responsible"
+            size="large"
+            shape="circle"
+            [style.cursor]="'default'"
+            [label]="systemService.setFirstLetterOfName(responsible?.name?.first)"
+            [pTooltip]="responsible.name?.full"
+        ></p-avatar>
+    </ng-container>
+    <p-avatar
+        *ngIf="config.responsibles.length > 3"
+        [label]="getLastAvatar()"
+        shape="circle"
+        size="large"
+        [style]="{
+            'background-color': '#9c27b0',
+            color: '#ffffff'
+        }"
+    ></p-avatar>
+</p-avatarGroup>

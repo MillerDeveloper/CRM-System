@@ -1,0 +1,12 @@
+::ng-deep {
+    .stages {
+        .field-box {
+            min-width: 200px;
+            margin-bottom: 5px;
+
+            &.active {
+                outline: 2px solid white;
+            }
+        }
+    }
+}

@@ -1,0 +1,106 @@
+<div class="profile content-container">
+    <div class="settings-header">
+        <h3 class="settings-header--title paramount-text">{{ 'global.profile' | translate }}</h3>
+        <p class="settings-header--description secondary-text">
+            {{ 'profile.description' | translate }}
+        </p>
+    </div>
+
+    <p-divider></p-divider>
+
+    <div class="avatar">
+        <div class="avatar__wrapper">
+            <p-avatar
+                shape="circle"
+                size="xlarge"
+                styleClass="xxlarge"
+                [label]="systemService.avatarLabel()"
+                [image]="currentUser?.avatar?.url"
+                [style]="{ 'background-color': '#2196F3', color: '#ffffff' }"
+            ></p-avatar>
+
+            <div class="avatar-controls">
+                <p class="avatar-controls__title">
+                    {{ 'global.profilePicture' | translate }}
+                </p>
+
+                <div>
+                    <div class="avatar-buttons">
+                        <app-upload-button
+                            [config]="{
+                                multiple: false,
+                                setFormData: true,
+                                accept: 'image/*'
+                            }"
+                            (uploadFiles)="uploadAvatar($event)"
+                        ></app-upload-button>
+
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            class="p-button-outlined"
+                            [label]="'global.remove' | translate"
+                            (click)="removeAvatar()"
+                        ></button>
+                    </div>
+
+                    <small class="avatar--info-text">{{
+                        'profile.maxUploadSize' | translate
+                    }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="user-fields">
+        <form class="user-form" [formGroup]="userForm">
+            <div formGroupName="name" class="form-box">
+                <div class="p-field no-margin">
+                    <span class="p-float-label">
+                        <input id="float-input" type="text" formControlName="first" pInputText />
+                        <label for="float-input">{{ 'global.name.first' | translate }}</label>
+                    </span>
+                </div>
+
+                <div class="p-field no-margin">
+                    <span class="p-float-label">
+                        <input id="float-input" type="text" formControlName="last" pInputText />
+                        <label for="float-input">{{ 'global.name.last' | translate }}</label>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-box">
+                <div class="p-field no-margin">
+                    <span class="p-float-label">
+                        <input id="float-input" type="text" formControlName="email" pInputText />
+                        <label for="float-input">Email</label>
+                    </span>
+                </div>
+
+                <div class="p-field no-margin"></div>
+            </div>
+
+            <p-divider styleClass="no-margin"></p-divider>
+
+            <div formGroupName="info" class="form-box">
+                <div formGroupName="language" class="p-field no-margin">
+                    <p-dropdown
+                        appendTo="body"
+                        formControlName="code"
+                        [placeholder]="'global.selectLang' | translate"
+                        [options]="langs"
+                    >
+                        <ng-template pTemplate="selectedItem">
+                            {{ 'langs.' + userForm.value.info.language.code | translate }}
+                        </ng-template>
+                        <ng-template let-lang pTemplate="item">
+                            {{ 'langs.' + lang | translate }}
+                        </ng-template>
+                    </p-dropdown>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+<div class="p-modal">
+    <ng-container *ngIf="!stage.isSettingRights">
+        <span class="p-field">
+            <p-chips
+                placeholder="Enter emails..."
+                [addOnBlur]="true"
+                [(ngModel)]="userEmails"
+            ></p-chips>
+        </span>
+    </ng-container>
+
+    <app-user-rights
+        *ngIf="stage.isSettingRights"
+        [config]="{
+            modalMode: stage.isFilledCollectionsRights ? 'systemRights' : 'collectionsRights'
+        }"
+        (rightsChanged)="rightsChanged($event)"
+    ></app-user-rights>
+
+    <div class="p-modal-controls p-modal-controls--right">
+        <div class="p-modal-controls__part">
+            <p-button
+                icon="pi pi-send"
+                styleClass="p-button-outlined"
+                label="Invite"
+                (click)="invite()"
+            ></p-button>
+            <p-button
+                icon="pi pi-send"
+                [label]="'global.next' | translate"
+                (click)="nextStep()"
+            ></p-button>
+        </div>
+    </div>
+</div>

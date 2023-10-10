@@ -1,0 +1,68 @@
+<section *ngIf="calls.length > 0; else noOneCall" class="calls">
+    <app-header></app-header>
+
+    <div class="calls__wrapper">
+        <div *ngFor="let call of calls" class="call-box element-list--box">
+            <div class="call-box__part element-list__part">
+                <p class="call-box--title">
+                    {{ call.callType === 'income' ? 'Income call' : 'Outcome call' }}
+                </p>
+                <ng-container
+                    *ngIf="
+                        collectionElementService.getConnectionLabel(
+                            call.connection.collectionRef,
+                            call.connection.to
+                        ) as label
+                    "
+                >
+                    <p-chip
+                        styleClass="call-box__connected-to"
+                        icon="pi pi-arrow-right-arrow-left"
+                        [label]="label"
+                        (click)="collectionElementService.openCard(call)"
+                    ></p-chip>
+                </ng-container>
+                <p-inplace>
+                    <ng-template pTemplate="display">
+                        <i class="pi pi-play"></i>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <div #audioBox class="call-box__record">
+                            <audio
+                                class="call-box__audio"
+                                controls
+                                crossorigin="anonymous"
+                                [src]="call.recordRef | fetchFile"
+                            ></audio>
+                        </div>
+                    </ng-template>
+                </p-inplace>
+            </div>
+
+            <div class="call-box__part element-list__part">
+                <p>{{ call.duration }} sec.</p>
+                <p-chip [label]="(call.createdAt | date : 'dd.MM.yyyy | HH:mm') || ''"></p-chip>
+
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    icon="pi pi-download"
+                    class="p-button-rounded p-button-text"
+                    (click)="downloadCallRecord(call)"
+                ></button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<ng-template #noOneCall>
+    <div class="create-view center-block-position">
+        <h3 class="center-block--title">
+            {{ 'calls.noOneCallTitle' | translate }}
+        </h3>
+        <p class="center-block--description">
+            {{ 'calls.noOneCallDescription' | translate }}
+        </p>
+    </div>
+</ng-template>

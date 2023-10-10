@@ -1,0 +1,217 @@
+<section class="register">
+    <div class="auth-container">
+        <div class="auth-wrapper">
+            <form class="auth-fields" [formGroup]="authForm">
+                <ng-container *ngIf="!state.isSendMail || !state.isVerifiedCode">
+                    <ng-container *ngIf="!state.isSendMail && !state.isVerifiedCode">
+                        <h4 class="auth-wrapper__title">{{ 'auth.enterEmail' | translate }}</h4>
+                        <p class="auth-wrapper__description secondary-text">
+                            {{ 'register.emailDescription' | translate }}
+                            <span class="auth-wrapper__switch-auth" [routerLink]="['/login']">{{
+                                'register.orLogin' | translate
+                            }}</span>
+                        </p>
+                    </ng-container>
+
+                    <ng-container *ngIf="state.isSendMail">
+                        <h4 class="auth-wrapper__title">
+                            {{ 'register.checkInboxTitle' | translate }}
+                        </h4>
+                        <p class="auth-wrapper__description secondary-text">
+                            {{ 'register.checkInboxDescription' | translate }}
+                        </p>
+                    </ng-container>
+                    <div class="p-field">
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-at"></i>
+                            <input
+                                id="email"
+                                type="email"
+                                aria-describedby="email"
+                                autocomplete
+                                pInputText
+                                formControlName="email"
+                                [placeholder]="'auth.enterEmail' | translate"
+                            />
+                        </span>
+                        <small
+                            class="p-error block"
+                            *ngIf="
+                                authForm.controls['email'].touched &&
+                                authForm.controls['email'].invalid
+                            "
+                        >
+                            {{ 'auth.enterValidEmail' | translate }}
+                        </small>
+                    </div>
+
+                    <div *ngIf="state.isSendMail" class="p-field">
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-unlock"></i>
+                            <p-inputMask
+                                id="verificationCode"
+                                class="code-field"
+                                pInputText
+                                formControlName="verificationCode"
+                                slotChar="-"
+                                autofocus
+                                [placeholder]="'register.enterCode' | translate"
+                                [mask]="'9 9 9 9 9'"
+                            ></p-inputMask>
+                        </span>
+                        <small
+                            class="p-error block"
+                            *ngIf="
+                                authForm.controls['verificationCode'].touched &&
+                                authForm.controls['verificationCode'].invalid
+                            "
+                        >
+                            {{ 'register.enterValidCode' | translate }}
+                        </small>
+                    </div>
+                </ng-container>
+
+                <ng-container
+                    *ngIf="state.isSendMail && state.isVerifiedCode && !state.userCreated"
+                >
+                    <div class="avatar">
+                        <p-avatar
+                            shape="circle"
+                            size="xlarge"
+                            [label]="firstLetterOfName"
+                            [style]="{ 'background-color': '#2196F3', color: '#ffffff' }"
+                        ></p-avatar>
+
+                        <div class="avatar-controls">
+                            <p class="avatar-controls__title">
+                                {{ 'global.profilePicture' | translate }}
+                            </p>
+
+                            <div class="avatar-buttons">
+                                <app-upload-button></app-upload-button>
+
+                                <button
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    class="p-button-danger"
+                                    [label]="'global.remove' | translate"
+                                ></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-field-group">
+                        <div class="p-field">
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-user"></i>
+                                <input
+                                    id="firstName"
+                                    type="text"
+                                    pInputText
+                                    formControlName="firstName"
+                                    autocomplete="off"
+                                    [placeholder]="'global.name.first' | translate"
+                                    (ngModelChange)="setFirstLetterOfName()"
+                                />
+                            </span>
+                        </div>
+
+                        <div class="p-field">
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-user"></i>
+                                <input
+                                    id="lastName"
+                                    type="text"
+                                    pInputText
+                                    autocomplete="off"
+                                    formControlName="lastName"
+                                    [placeholder]="'global.name.last' | translate"
+                                />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="p-field">
+                        <span class="p-input-icon-left">
+                            <!-- <i class="pi pi-search"></i> -->
+                            <p-password
+                                formControlName="password"
+                                [placeholder]="'auth.enterPassword' | translate"
+                                [toggleMask]="true"
+                            ></p-password>
+                        </span>
+                    </div>
+
+                    <div class="p-field">
+                        <span class="p-input-icon-left">
+                            <!-- <i class="pi pi-search"></i> -->
+                            <p-password
+                                formControlName="passwordConfirm"
+                                [placeholder]="'register.passwordConfim' | translate"
+                                [feedback]="false"
+                                [toggleMask]="true"
+                            ></p-password>
+                        </span>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="state.userCreated">
+                    <h4 class="auth-wrapper__title">
+                        {{ 'register.createCompanyTitle' | translate }}
+                    </h4>
+                    <p class="auth-wrapper__description secondary-text">
+                        {{ 'register.createCompanyDescription' | translate }}
+                    </p>
+
+                    <div class="p-field">
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-box"></i>
+                            <input
+                                id="companyName"
+                                type="text"
+                                pInputText
+                                formControlName="companyName"
+                                [placeholder]="'register.enterCompanyName' | translate"
+                            />
+                        </span>
+                    </div>
+
+                    <div class="p-field">
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-book"></i>
+                            <input
+                                id="workspaceName"
+                                type="text"
+                                pInputText
+                                formControlName="workspaceName"
+                                pKeyFilter="alpha"
+                                [placeholder]="'auth.enterWorkspaceName' | translate"
+                            />
+                        </span>
+                    </div>
+                </ng-container>
+
+                <p-button
+                    type="submit"
+                    styleClass="auth-submit p-full-width"
+                    [label]="'global.continue' | translate"
+                    [disabled]="authForm.invalid"
+                    (onClick)="nextStep()"
+                ></p-button>
+            </form>
+
+            <div class="auth-info">
+                <h3 class="auth-info__title">{{ 'register.greetingTitle' | translate }}</h3>
+                <p class="auth-description secondary-text">
+                    {{ 'register.greetingDescription' | translate }}
+                    <br />
+                    {{ 'register.greetingSeccondDescription' | translate }}
+                    <br />
+                    <br />
+                    {{ 'register.letsBegin' | translate }}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>

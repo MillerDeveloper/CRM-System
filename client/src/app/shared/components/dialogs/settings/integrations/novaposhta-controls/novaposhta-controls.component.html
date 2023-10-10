@@ -1,0 +1,86 @@
+<div class="p-modal">
+    <form [formGroup]="novaposhtaForm">
+        <div *ngIf="!stage.isFilledApiKey" class="p-field">
+            <input
+                type="text"
+                pInputText
+                required
+                [placeholder]="'Novaposhta api key'"
+                formControlName="key"
+            />
+        </div>
+
+        <!-- <div *ngIf="stage.isFilledApiKey" formGroupName="sender">
+            <div class="p-field">
+                <p-dropdown
+                    optionLabel="Present"
+                    appendTo="body"
+                    formControlName="city"
+                    [options]="serviceData.cities"
+                    [placeholder]="'CitySender'"
+                    [filter]="true"
+                    (onFilter)="getCities($event)"
+                    (onChange)="getCounterparty('Sender')"
+                ></p-dropdown>
+            </div>
+
+            <div class="p-field">
+                <p-dropdown
+                    optionLabel="Description"
+                    appendTo="body"
+                    formControlName="data"
+                    [filter]="true"
+                    [options]="serviceData.senders"
+                    [placeholder]="'Sender'"
+                    (onFilter)="getCounterparty('Sender')"
+                    (onChange)="getContacts('Sender')"
+                ></p-dropdown>
+            </div>
+
+            <div class="p-field">
+                <p-dropdown
+                    optionLabel="Description"
+                    appendTo="body"
+                    formControlName="contact"
+                    [filter]="true"
+                    [options]="serviceData.contactsSender"
+                    [placeholder]="'Contact'"
+                    (onFilter)="getContacts('Sender')"
+                ></p-dropdown>
+            </div>
+
+            <div class="p-field">
+                <p-dropdown
+                    optionLabel="Description"
+                    appendTo="body"
+                    formControlName="warehouseType"
+                    [options]="serviceData.warehouseTypes"
+                    [placeholder]="'Warehouse Types'"
+                >
+                </p-dropdown>
+            </div>
+
+            <div class="p-field">
+                <p-dropdown
+                    optionLabel="Description"
+                    appendTo="body"
+                    formControlName="address"
+                    [options]="serviceData.warehouses"
+                    [placeholder]="'Warehouse'"
+                    [filter]="true"
+                    (onShow)="getWarehouses($event, 'Sender')"
+                    (onFilter)="getWarehouses($event, 'Sender')"
+                ></p-dropdown>
+            </div>
+        </div> -->
+
+        <div class="p-modal-controls p-modal-controls--right">
+            <p-button
+                icon="pi pi-save"
+                label="Save"
+                [disabled]="novaposhtaForm.invalid"
+                (click)="close()"
+            ></p-button>
+        </div>
+    </form>
+</div>
